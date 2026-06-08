@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_loyalty_point_wizard_form" model="ir.ui.view">
+        <field name="name">membership.loyalty.point.wizard.form</field>
+        <field name="model">membership.loyalty.point.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add Loyalty Points">
+                <sheet>
+                    <group>
+                        <field name="member_ids" widget="many2many_tags" />
+                        <field name="points" />
+                        <field name="note" />
+                    </group>
+                </sheet>
+
+                <footer>
+                    <button name="action_generate_loyalty_points"
+                        type="object"
+                        string="Generate"
+                        class="btn-primary" />
+                    <button string="Cancel"
+                        class="btn-secondary"
+                        special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_loyalty_point_wizard" model="ir.actions.act_window">
+        <field name="name">Add Loyalty Points</field>
+        <field name="res_model">membership.loyalty.point.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_loyalty_point_wizard_form" />
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_membership_dashboard,membership.dashboard,model_membership_dashboard,,1,1,1,1
+access_loyalty_point_wizard,membership.loyalty.point.wizard,model_membership_loyalty_point_wizard,,1,1,1,1

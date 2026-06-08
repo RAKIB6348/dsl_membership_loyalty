@@ -19,6 +19,30 @@
                 <field name="portal_user_id" readonly="1" />
             </xpath>
 
+            <!-- Add Loyalty Point stat button inside button box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_loyalty_points"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-star"
+                    invisible="not is_membership">
+                    <field name="loyalty_points"
+                        widget="statinfo"
+                        string="Points" />
+                </button>
+            </xpath>
+
+            <!-- Add Add Loyalty Points button in form header -->
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button name="action_open_loyalty_point_wizard"
+                        type="object"
+                        string="Add Loyalty Points"
+                        class="btn-primary"
+                        invisible="not is_membership" />
+                </header>
+            </xpath>
+
         </field>
     </record>
 

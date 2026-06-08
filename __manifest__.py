@@ -27,7 +27,7 @@ Long description of module's purpose
         'views/membership_dashboard_views.xml',
         'views/menu_views.xml',
         'views/res_partner_views.xml',
-       
+        'views/loyalty_point_wizard_views.xml',
         
     ],
     # only loaded in demonstration mode

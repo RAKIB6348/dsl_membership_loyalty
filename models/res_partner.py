@@ -7,6 +7,7 @@ class ResPartner(models.Model):
 
     is_membership = fields.Boolean(string='Is Membership', default=False)
     is_agent = fields.Boolean(string='Is Agent', default=False)
+    loyalty_points = fields.Integer(string='Loyalty Points', default=0)
 
     portal_user_id = fields.Many2one(
         'res.users',
@@ -14,6 +15,28 @@ class ResPartner(models.Model):
         readonly=True,
         copy=False
     )
+
+    def action_open_loyalty_point_wizard(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Add Loyalty Points',
+            'res_model': 'membership.loyalty.point.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_member_ids': [(6, 0, self.ids)],
+            }
+        }
+
+    def action_view_loyalty_points(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Loyalty Points',
+            'res_model': 'res.partner',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'current',
+        }
 
     def _create_portal_user(self):
         if self.env.context.get('skip_membership_portal_user'):
