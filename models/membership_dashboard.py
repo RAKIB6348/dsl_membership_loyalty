@@ -10,13 +10,15 @@ class MembershipDashboard(models.Model):
     total_members = fields.Integer(compute="_compute_dashboard_data")
     total_agents = fields.Integer(compute="_compute_dashboard_data")
     total_portal_users = fields.Integer(compute="_compute_dashboard_data")
-
     today_members = fields.Integer(compute="_compute_dashboard_data")
     today_agents = fields.Integer(compute="_compute_dashboard_data")
 
     def _compute_dashboard_data(self):
         Partner = self.env["res.partner"]
         today = fields.Date.context_today(self)
+
+        start_date = f"{today} 00:00:00"
+        end_date = f"{today} 23:59:59"
 
         for rec in self:
             rec.total_members = Partner.search_count([
@@ -28,6 +30,7 @@ class MembershipDashboard(models.Model):
             ])
 
             rec.total_portal_users = Partner.search_count([
+                "&",
                 ("portal_user_id", "!=", False),
                 "|",
                 ("is_membership", "=", True),
@@ -36,19 +39,12 @@ class MembershipDashboard(models.Model):
 
             rec.today_members = Partner.search_count([
                 ("is_membership", "=", True),
-                ("create_date", ">=", f"{today} 00:00:00"),
-                ("create_date", "<=", f"{today} 23:59:59"),
+                ("create_date", ">=", start_date),
+                ("create_date", "<=", end_date),
             ])
 
             rec.today_agents = Partner.search_count([
                 ("is_agent", "=", True),
-                ("create_date", ">=", f"{today} 00:00:00"),
-                ("create_date", "<=", f"{today} 23:59:59"),
+                ("create_date", ">=", start_date),
+                ("create_date", "<=", end_date),
             ])
-
-    @api.model
-    def get_dashboard_record(self):
-        record = self.search([], limit=1)
-        if not record:
-            record = self.create({"name": "Membership Dashboard"})
-        return record

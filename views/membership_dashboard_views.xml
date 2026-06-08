@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <form string="Membership Dashboard" create="0" edit="0">
                 <sheet>
-                    <div class="oe_title">
-                        <center><h1>Membership Dashboard</h1></center>
+                    <div class="oe_title text-center">
+                        <h1>Membership Dashboard</h1>
                     </div>
 
                     <!-- First row dashboard cards -->
@@ -67,11 +67,17 @@
         </field>
     </record>
 
+    <!-- Fixed dashboard record -->
+    <record id="membership_dashboard_record" model="membership.dashboard">
+        <field name="name">Membership Dashboard</field>
+    </record>
+
     <record id="action_membership_dashboard" model="ir.actions.act_window">
         <field name="name">Dashboard</field>
         <field name="res_model">membership.dashboard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_membership_dashboard_form" />
+        <field name="res_id" ref="membership_dashboard_record" />
         <field name="target">current</field>
     </record>
 
