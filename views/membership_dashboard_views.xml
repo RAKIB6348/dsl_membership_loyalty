@@ -8,9 +8,10 @@
             <form string="Membership Dashboard" create="0" edit="0">
                 <sheet>
                     <div class="oe_title">
-                        <h1>Membership Dashboard</h1>
+                        <center><h1>Membership Dashboard</h1></center>
                     </div>
 
+                    <!-- First row dashboard cards -->
                     <div class="row mt-4">
                         <div class="col-md-4">
                             <div class="card text-center shadow-sm p-3">
@@ -39,6 +40,28 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Second row dashboard cards -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card text-center shadow-sm p-3">
+                                <h3>Today's Members</h3>
+                                <h1>
+                                    <field name="today_members" />
+                                </h1>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card text-center shadow-sm p-3">
+                                <h3>Today's Agents</h3>
+                                <h1>
+                                    <field name="today_agents" />
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
                 </sheet>
             </form>
         </field>
