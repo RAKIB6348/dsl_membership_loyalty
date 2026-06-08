@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_membership_loyalty" model="ir.ui.view">
+        <field name="name">res.partner.form.membership.loyalty</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+
+            <!-- Make Email field required -->
+            <xpath expr="//field[@name='email']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+
+            <!-- Add Membership and Agent fields after VAT / Tax ID field -->
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="is_membership" />
+                <field name="is_agent" />
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

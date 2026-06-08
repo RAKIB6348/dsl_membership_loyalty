@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Membership action: when clicking New, is_membership will be True by default -->
+    <record id="action_membership_contacts" model="ir.actions.act_window">
+        <field name="name">Membership</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('is_membership', '=', True)]</field>
+        <field name="context">{'default_is_membership': True}</field>
+    </record>
+
+    <!-- Agent action: when clicking New, is_agent will be True by default -->
+    <record id="action_agent_contacts" model="ir.actions.act_window">
+        <field name="name">Agent</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('is_agent', '=', True)]</field>
+        <field name="context">{'default_is_agent': True}</field>
+    </record>
+
+    <!-- Root menu for Membership and Loyalty Management -->
+    <menuitem id="membership_loyalty_root_menu"
+        name="Membership &amp; Loyalty"
+        sequence="10" />
+
+    <!-- Membership submenu: opens only membership contacts -->
+    <menuitem id="membership_submenu"
+        name="Membership"
+        parent="membership_loyalty_root_menu"
+        action="action_membership_contacts"
+        sequence="10" />
+
+    <!-- Agent submenu: opens only agent contacts -->
+    <menuitem id="agent_submenu"
+        name="Agent"
+        parent="membership_loyalty_root_menu"
+        action="action_agent_contacts"
+        sequence="20" />
+
+</odoo>
