@@ -1,22 +1,21 @@
-# -*- coding: utf-8 -*-
-# from odoo import http
+from odoo import http
+from odoo.http import request
 
 
-# class DslMembershipLoyalty(http.Controller):
-#     @http.route('/dsl_membership_loyalty/dsl_membership_loyalty', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
+class MembershipPortal(http.Controller):
 
-#     @http.route('/dsl_membership_loyalty/dsl_membership_loyalty/objects', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('dsl_membership_loyalty.listing', {
-#             'root': '/dsl_membership_loyalty/dsl_membership_loyalty',
-#             'objects': http.request.env['dsl_membership_loyalty.dsl_membership_loyalty'].search([]),
-#         })
+    @http.route('/my', type='http', auth='user')
+    def membership_card_page(self, **kw):
+        partner = request.env.user.partner_id
+        return request.render(
+            'dsl_membership_loyalty.portal_membership_card_template',
+            {'partner': partner}
+        )
 
-#     @http.route('/dsl_membership_loyalty/dsl_membership_loyalty/objects/<model("dsl_membership_loyalty.dsl_membership_loyalty"):obj>', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('dsl_membership_loyalty.object', {
-#             'object': obj
-#         })
-
+    @http.route('/my/membership-card', type='http', auth='user')
+    def membership_card_details_page(self, **kw):
+        partner = request.env.user.partner_id
+        return request.render(
+            'dsl_membership_loyalty.portal_membership_card_details_template',
+            {'partner': partner}
+        )
