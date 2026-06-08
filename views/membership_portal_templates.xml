@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_membership_card_template" name="Membership Card">
+        <t t-call="portal.portal_layout">
+            <style>
+                .membership-card {
+                    max-width: 450px;
+                    margin: auto;
+                    background: #ffffff;
+                    border-radius: 12px;
+                    padding: 30px;
+                    text-align: center;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+                    cursor: pointer;
+                }
+                .membership-card a {
+                    text-decoration: none;
+                    color: inherit;
+                    display: block;
+                }
+                .member-image {
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    margin-bottom: 15px;
+                    border: 4px solid #875A7B;
+                }
+                .points {
+                    font-size: 32px;
+                    font-weight: bold;
+                    color: #875A7B;
+                }
+            </style>
+
+            <div class="container mt-5 mb-5">
+                <div class="membership-card">
+                    <a href="/my/membership-card">
+
+                        <t t-if="partner.image_1920">
+                            <img t-att-src="'/web/image/res.partner/%s/image_1920' % partner.id"
+                                class="member-image" />
+                        </t>
+
+                        <h2>Membership Card</h2>
+                        <hr />
+
+                        <h3>
+                            <t t-esc="partner.name" />
+                        </h3>
+
+                        <p>
+                            <strong>Email:</strong>
+                            <t t-esc="partner.email or ''" />
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+                            <t t-if="partner.is_membership">Active Member</t>
+                            <t t-else="">Not a Member</t>
+                        </p>
+
+                        <p>
+                            <strong>Loyalty Points</strong>
+                        </p>
+
+                        <div class="points">
+                            <t t-esc="partner.loyalty_points" />
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_membership_card_details_template" name="Membership Card Details">
+        <t t-call="portal.portal_layout">
+            <style>
+                .details-wrapper {
+                    max-width: 900px;
+                    margin: auto;
+                    display: flex;
+                    gap: 25px;
+                }
+                .info-card,
+                .points-card {
+                    background: #ffffff;
+                    border-radius: 12px;
+                    padding: 30px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+                }
+                .info-card {
+                    width: 60%;
+                }
+                .points-card {
+                    width: 40%;
+                    text-align: center;
+                }
+                .member-image {
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    margin-bottom: 15px;
+                    border: 4px solid #875A7B;
+                }
+                .points {
+                    font-size: 60px;
+                    font-weight: bold;
+                    color: #875A7B;
+                }
+                .back-btn {
+                    display: inline-block;
+                    margin-bottom: 20px;
+                    text-decoration: none;
+                    color: #875A7B;
+                    font-weight: bold;
+                }
+            </style>
+
+            <div class="container mt-5 mb-5">
+                <a href="/my" class="back-btn">← Back</a>
+
+                <div class="details-wrapper">
+                    <div class="info-card">
+                        <h2>Member Information</h2>
+                        <hr />
+
+                        <t t-if="partner.image_1920">
+                            <img t-att-src="'/web/image/res.partner/%s/image_1920' % partner.id"
+                                class="member-image" />
+                        </t>
+
+                        <p>
+                            <strong>Name:</strong>
+                            <t t-esc="partner.name" />
+                        </p>
+                        <p>
+                            <strong>Email:</strong>
+                            <t t-esc="partner.email or ''" />
+                        </p>
+                        <p>
+                            <strong>Phone:</strong>
+                            <t t-esc="partner.phone or ''" />
+                        </p>
+                        <p>
+                            <strong>Mobile:</strong>
+                            <t t-esc="partner.mobile or ''" />
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+                            <t t-if="partner.is_membership">Active Member</t>
+                            <t t-else="">Not a Member</t>
+                        </p>
+                    </div>
+
+                    <div class="points-card">
+                        <h2>Loyalty Points</h2>
+                        <hr />
+                        <div class="points">
+                            <t t-esc="partner.loyalty_points" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

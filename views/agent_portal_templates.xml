@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_agent_dashboard_template" name="Agent Dashboard">
+        <t t-call="portal.portal_layout">
+            <style>
+                .agent-dashboard-wrapper {
+                    max-width: 1000px;
+                    margin: auto;
+                    display: flex;
+                    gap: 25px;
+                }
+                .agent-info,
+                .member-search {
+                    background: #ffffff;
+                    border-radius: 12px;
+                    padding: 30px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+                }
+                .agent-info {
+                    width: 45%;
+                }
+                .member-search {
+                    width: 55%;
+                }
+                .agent-image {
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 4px solid #875A7B;
+                    margin-bottom: 15px;
+                }
+                .points {
+                    font-size: 42px;
+                    font-weight: bold;
+                    color: #875A7B;
+                }
+                .agent-btn {
+                    margin-top: 15px;
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    background: #875A7B;
+                    color: white;
+                    font-size: 16px;
+                    cursor: pointer;
+                }
+            </style>
+
+            <div class="container mt-5 mb-5">
+                <h1 class="text-center mb-4">Agent Dashboard</h1>
+
+                <div class="agent-dashboard-wrapper">
+
+                    <div class="agent-info">
+                        <h2>Agent Information</h2>
+                        <hr />
+
+                        <t t-if="partner.image_1920">
+                            <img t-att-src="'/web/image/res.partner/%s/image_1920' % partner.id"
+                                class="agent-image" />
+                        </t>
+
+                        <p>
+                            <strong>Name:</strong>
+                            <t t-esc="partner.name" />
+                        </p>
+                        <p>
+                            <strong>Email:</strong>
+                            <t t-esc="partner.email or ''" />
+                        </p>
+                        <p>
+                            <strong>Phone:</strong>
+                            <t t-esc="partner.phone or ''" />
+                        </p>
+                        <p>
+                            <strong>Mobile:</strong>
+                            <t t-esc="partner.mobile or ''" />
+                        </p>
+                        <p><strong>Status:</strong> Active Agent</p>
+
+                        <p>
+                            <strong>Loyalty Points</strong>
+                        </p>
+                        <div class="points">
+                            <t t-esc="partner.loyalty_points" />
+                        </div>
+                    </div>
+
+                    <div class="member-search">
+                        <h2>Member Lookup</h2>
+                        <hr />
+
+                        <p>Enter member phone number</p>
+
+                        <form action="/my/agent/member-search" method="post">
+                            <input type="hidden"
+                                name="csrf_token"
+                                t-att-value="request.csrf_token()" />
+
+                            <input type="text"
+                                name="member_phone"
+                                class="form-control"
+                                placeholder="Enter member phone number" />
+
+                            <button type="submit" class="agent-btn">
+                                Search Member
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -28,8 +28,8 @@ Long description of module's purpose
         'views/menu_views.xml',
         'views/res_partner_views.xml',
         'views/loyalty_point_wizard_views.xml',
-        'views/portal_templates.xml',
-        
+        'views/membership_portal_templates.xml',
+        'views/agent_portal_templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
