@@ -97,7 +97,6 @@ res.partner
 * Membership Types
 * Membership Expiry Management
 * Loyalty Point Transactions
-* POS Integration
 * Sales Integration
 * Membership Discount Rules
 * Membership Dashboard
