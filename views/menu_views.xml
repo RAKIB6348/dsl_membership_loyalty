@@ -24,6 +24,13 @@
         name="Membership &amp; Loyalty"
         sequence="10" />
 
+    <!-- Dashboard submenu -->
+    <menuitem id="membership_dashboard_submenu"
+        name="Dashboard"
+        parent="membership_loyalty_root_menu"
+        action="action_membership_dashboard"
+        sequence="5" />
+
     <!-- Membership submenu: opens only membership contacts -->
     <menuitem id="membership_submenu"
         name="Membership"

@@ -22,8 +22,9 @@ Long description of module's purpose
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
 
+        'views/membership_dashboard_views.xml',
         'views/menu_views.xml',
         'views/res_partner_views.xml',
        
