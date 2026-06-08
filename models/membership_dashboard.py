@@ -48,3 +48,75 @@ class MembershipDashboard(models.Model):
                 ("create_date", ">=", start_date),
                 ("create_date", "<=", end_date),
             ])
+
+    def action_view_members(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Members",
+            "res_model": "res.partner",
+            "view_mode": "kanban,tree,form",
+            "domain": [("is_membership", "=", True)],
+            "target": "current",
+        }
+
+    def action_view_agents(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Agents",
+            "res_model": "res.partner",
+            "view_mode": "kanban,tree,form",
+            "domain": [("is_agent", "=", True)],
+            "target": "current",
+        }
+
+    def action_view_portal_users(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Portal Users",
+            "res_model": "res.partner",
+            "view_mode": "kanban,tree,form",
+            "domain": [
+                "&",
+                ("portal_user_id", "!=", False),
+                "|",
+                ("is_membership", "=", True),
+                ("is_agent", "=", True),
+            ],
+            "target": "current",
+        }
+
+    def action_view_today_members(self):
+        today = fields.Date.context_today(self)
+        start_date = f"{today} 00:00:00"
+        end_date = f"{today} 23:59:59"
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Today's Members",
+            "res_model": "res.partner",
+            "view_mode": "kanban,tree,form",
+            "domain": [
+                ("is_membership", "=", True),
+                ("create_date", ">=", start_date),
+                ("create_date", "<=", end_date),
+            ],
+            "target": "current",
+        }
+
+    def action_view_today_agents(self):
+        today = fields.Date.context_today(self)
+        start_date = f"{today} 00:00:00"
+        end_date = f"{today} 23:59:59"
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Today's Agents",
+            "res_model": "res.partner",
+            "view_mode": "kanban,tree,form",
+            "domain": [
+                ("is_agent", "=", True),
+                ("create_date", ">=", start_date),
+                ("create_date", "<=", end_date),
+            ],
+            "target": "current",
+        }
