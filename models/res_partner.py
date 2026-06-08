@@ -7,7 +7,9 @@ class ResPartner(models.Model):
 
     is_membership = fields.Boolean(string='Is Membership', default=False)
     is_agent = fields.Boolean(string='Is Agent', default=False)
+
     loyalty_points = fields.Integer(string='Loyalty Points', default=0)
+    loyalty_amount = fields.Float(string='Loyalty Amount', default=0.0)
 
     portal_user_id = fields.Many2one(
         'res.users',
@@ -15,6 +17,18 @@ class ResPartner(models.Model):
         readonly=True,
         copy=False
     )
+
+    def _update_loyalty_amount(self):
+        config = self.env['loyalty.configuration'].search([
+            ('active', '=', True),
+            ('point', '>', 0),
+        ], order='point desc', limit=1)
+
+        for partner in self:
+            if config:
+                partner.loyalty_amount = (partner.loyalty_points / config.point) * config.amount
+            else:
+                partner.loyalty_amount = 0.0
 
     def action_open_loyalty_point_wizard(self):
         return {
@@ -32,6 +46,16 @@ class ResPartner(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Loyalty Points',
+            'res_model': 'res.partner',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'current',
+        }
+
+    def action_view_loyalty_amount(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Loyalty Amount',
             'res_model': 'res.partner',
             'view_mode': 'form',
             'res_id': self.id,
@@ -82,6 +106,7 @@ class ResPartner(models.Model):
     def create(self, vals_list):
         partners = super().create(vals_list)
         partners._create_portal_user()
+        partners._update_loyalty_amount()
         return partners
 
     def write(self, vals):
@@ -92,5 +117,8 @@ class ResPartner(models.Model):
 
         if vals.get('is_membership') or vals.get('is_agent') or vals.get('email'):
             self._create_portal_user()
+
+        if 'loyalty_points' in vals:
+            self._update_loyalty_amount()
 
         return res

@@ -12,14 +12,15 @@
                 <attribute name="required">1</attribute>
             </xpath>
 
-            <!-- Add Membership and Agent fields after VAT / Tax ID field -->
+            <!-- Add Membership, Agent, Portal User and Loyalty Amount fields after VAT / Tax ID -->
             <xpath expr="//field[@name='vat']" position="after">
                 <field name="is_membership" />
                 <field name="is_agent" />
                 <field name="portal_user_id" readonly="1" />
+                <field name="loyalty_amount" readonly="1" />
             </xpath>
 
-            <!-- Add Loyalty Point stat button inside button box -->
+            <!-- Add Loyalty Point and Loyalty Amount stat buttons inside button box -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_loyalty_points"
                     type="object"
@@ -29,6 +30,16 @@
                     <field name="loyalty_points"
                         widget="statinfo"
                         string="Points" />
+                </button>
+
+                <button name="action_view_loyalty_amount"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-money"
+                    invisible="not is_membership">
+                    <field name="loyalty_amount"
+                        widget="statinfo"
+                        string="TK" />
                 </button>
             </xpath>
 
