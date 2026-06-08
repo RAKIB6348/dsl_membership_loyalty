@@ -45,4 +45,18 @@
         action="action_agent_contacts"
         sequence="20" />
 
+    
+    <!-- Configuration parent menu -->
+    <menuitem id="membership_configuration_menu"
+        name="Configuration"
+        parent="membership_loyalty_root_menu"
+        sequence="30" />
+
+    <!-- Loyalty Point Configuration submenu -->
+    <menuitem id="loyalty_configuration_submenu"
+        name="Loyalty Point Configuration"
+        parent="membership_configuration_menu"
+        action="action_loyalty_configuration"
+        sequence="10" />
+
 </odoo>
