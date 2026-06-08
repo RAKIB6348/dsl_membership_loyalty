@@ -4,11 +4,19 @@
 
 DSL Membership Loyalty is a custom Odoo 17 module that extends the Contact Management system to support Membership and Agent management.
 
-The module allows users to classify contacts as Members or Agents and automatically generates Portal Users for them. This module provides a foundation for implementing loyalty programs, membership benefits, agent management, and customer self-service portals.
+The module allows users to classify contacts as Members or Agents, automatically generates Portal Users for them, and provides a centralized dashboard for monitoring membership statistics. This module serves as a foundation for loyalty programs, membership benefits, agent management, and customer self-service portals.
 
 ---
 
 ## Features
+
+### Dashboard
+
+* Dedicated Membership Dashboard.
+* View total Membership contacts.
+* View total Agent contacts.
+* View total Portal Users.
+* Quick overview of membership-related statistics.
 
 ### Membership Management
 
@@ -47,9 +55,11 @@ dsl_membership_loyalty/
 ├── __manifest__.py
 ├── models/
 │   ├── __init__.py
-│   └── res_partner.py
+│   ├── res_partner.py
+│   └── membership_dashboard.py
 ├── views/
-│   ├── menu_items.xml
+│   ├── menu_views.xml
+│   ├── membership_dashboard_views.xml
 │   └── res_partner_views.xml
 ├── security/
 │   └── ir.model.access.csv
@@ -74,6 +84,7 @@ dsl_membership_loyalty/
 
 ### Membership & Loyalty
 
+* Dashboard
 * Membership
 * Agent
 
@@ -91,11 +102,22 @@ dsl_membership_loyalty/
 * contacts
 * portal
 
-### Extended Model
+### Extended Models
 
 ```python
 res.partner
+membership.dashboard
 ```
+
+---
+
+## Dashboard Metrics
+
+The Membership Dashboard provides:
+
+* Total Members
+* Total Agents
+* Total Portal Users
 
 ---
 
@@ -109,12 +131,14 @@ res.partner
 * Loyalty Point Transactions
 * Sales Integration
 * Membership Discount Rules
-* Membership Dashboard
 * Reports and Analytics
 * Membership Portal
 * Agent Portal
+* Loyalty Point Redemption System
+* Membership Tier Management
 
 ---
+
 
 ## License
 
