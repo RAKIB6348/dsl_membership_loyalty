@@ -5,7 +5,7 @@
         <t t-call="portal.portal_layout">
             <style>
                 .agent-dashboard-wrapper {
-                    max-width: 1000px;
+                    max-width: 1100px;
                     margin: auto;
                     display: flex;
                     gap: 25px;
@@ -18,12 +18,13 @@
                     box-shadow: 0 4px 15px rgba(0,0,0,0.12);
                 }
                 .agent-info {
-                    width: 45%;
+                    width: 40%;
                 }
                 .member-search {
-                    width: 55%;
+                    width: 60%;
                 }
-                .agent-image {
+                .agent-image,
+                .member-image {
                     width: 120px;
                     height: 120px;
                     border-radius: 50%;
@@ -45,6 +46,18 @@
                     color: white;
                     font-size: 16px;
                     cursor: pointer;
+                }
+                .error-message {
+                    margin-top: 15px;
+                    color: #dc3545;
+                    font-weight: bold;
+                }
+                .member-result {
+                    margin-top: 25px;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                    border-left: 5px solid #875A7B;
                 }
             </style>
 
@@ -92,7 +105,7 @@
                         <h2>Member Lookup</h2>
                         <hr />
 
-                        <p>Enter member phone number</p>
+                        <p>Search member by name, phone or email</p>
 
                         <form action="/my/agent/member-search" method="post">
                             <input type="hidden"
@@ -100,14 +113,57 @@
                                 t-att-value="request.csrf_token()" />
 
                             <input type="text"
-                                name="member_phone"
+                                name="member_search"
                                 class="form-control"
-                                placeholder="Enter member phone number" />
+                                placeholder="Enter member name, phone or email"
+                                t-att-value="search_value or ''" />
 
                             <button type="submit" class="agent-btn">
                                 Search Member
                             </button>
                         </form>
+
+                        <t t-if="search_error">
+                            <div class="error-message">
+                                <t t-esc="search_error" />
+                            </div>
+                        </t>
+
+                        <t t-if="searched_member">
+                            <div class="member-result">
+                                <h3>Member Information</h3>
+                                <hr />
+
+                                <t t-if="searched_member.image_1920">
+                                    <img
+                                        t-att-src="'/web/image/res.partner/%s/image_1920' % searched_member.id"
+                                        class="member-image" />
+                                </t>
+
+                                <p>
+                                    <strong>Name:</strong>
+                                    <t t-esc="searched_member.name" />
+                                </p>
+                                <p>
+                                    <strong>Email:</strong>
+                                    <t t-esc="searched_member.email or ''" />
+                                </p>
+                                <p>
+                                    <strong>Phone:</strong>
+                                    <t t-esc="searched_member.phone or ''" />
+                                </p>
+                                <p>
+                                    <strong>Mobile:</strong>
+                                    <t t-esc="searched_member.mobile or ''" />
+                                </p>
+                                <p>
+                                    <strong>Loyalty Points:</strong>
+                                    <t t-esc="searched_member.loyalty_points" />
+                                </p>
+                                <p><strong>Loyalty Amount:</strong> <t
+                                        t-esc="searched_member.loyalty_amount" /> TK</p>
+                            </div>
+                        </t>
                     </div>
 
                 </div>
