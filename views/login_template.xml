@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_login_user_type" inherit_id="web.login" name="Custom Login User Type">
+
+        <!-- Add Admin / Agent / Membership select before Email field -->
+        <xpath expr="//input[@name='login']/.." position="before">
+            <div class="mb-3">
+                <select name="login_user_type"
+                        id="login_user_type"
+                        class="form-control"
+                        required="required">
+                    <option value="" disabled="disabled" selected="selected">
+                        Select Login Type
+                    </option>
+                    <option value="admin">Admin</option>
+                    <option value="agent">Agent</option>
+                    <option value="membership">Membership</option>
+                </select>
+            </div>
+        </xpath>
+
+    </template>
+</odoo>

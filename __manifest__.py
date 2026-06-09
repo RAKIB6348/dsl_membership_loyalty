@@ -31,6 +31,7 @@ Long description of module's purpose
         'views/loyalty_point_wizard_views.xml',
         'views/membership_portal_templates.xml',
         'views/agent_portal_templates.xml',
+        'views/login_template.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
