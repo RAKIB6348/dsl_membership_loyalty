@@ -53,6 +53,30 @@ class MembershipPortal(CustomerPortal):
             ],
         )
 
+    @route(['/my/invoice/download/<int:invoice_id>'], type='http', auth='user', website=False)
+    def download_member_invoice(self, invoice_id, **kw):
+        partner = request.env.user.partner_id
+        invoice = request.env['account.move'].sudo().browse(invoice_id)
+
+        if not invoice.exists() or invoice.move_type != 'out_invoice' or invoice.partner_id.id != partner.id:
+            return request.not_found()
+
+        pdf, _ = request.env['ir.actions.report'].sudo()._render_qweb_pdf(
+            'account.account_invoices',
+            [invoice.id],
+        )
+
+        filename = '%s.pdf' % (invoice.name or 'invoice')
+
+        return request.make_response(
+            pdf,
+            headers=[
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf)),
+                ('Content-Disposition', content_disposition(filename)),
+            ],
+        )
+
     @route(['/my/partner-qr/<int:partner_id>'], type='http', auth='user')
     def partner_qr_code_image(self, partner_id, **kw):
         current_partner = request.env.user.partner_id

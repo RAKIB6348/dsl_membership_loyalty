@@ -870,6 +870,7 @@
                                         <th>Status</th>
                                         <th>Total</th>
                                         <th>Payment State</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -893,6 +894,12 @@
                                             <span class="state-badge">
                                                 <t t-esc="invoice.payment_state"/>
                                             </span>
+                                        </td>
+                                        <td>
+                                            <a t-att-href="'/my/invoice/download/%s' % invoice.id"
+                                               style="display:inline-block;padding:9px 14px;border-radius:999px;background:#875A7B;color:#fff;text-decoration:none;font-weight:700;font-size:13px;">
+                                                Download
+                                            </a>
                                         </td>
                                     </tr>
                                 </tbody>
