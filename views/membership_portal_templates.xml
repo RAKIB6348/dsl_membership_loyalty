@@ -213,6 +213,23 @@
                         font-weight: 800;
                     }
 
+                    .download-card-btn {
+                        display: block;
+                        margin: 0 26px 26px;
+                        padding: 13px 18px;
+                        border-radius: 14px;
+                        background: #875A7B;
+                        color: #ffffff;
+                        text-align: center;
+                        text-decoration: none;
+                        font-weight: 800;
+                    }
+
+                    .download-card-btn:hover {
+                        background: #74496a;
+                        color: #ffffff;
+                    }
+
                     @media (max-width: 520px) {
                         .summary-grid {
                             grid-template-columns: 1fr;
@@ -322,6 +339,10 @@
                             </div>
 
                         </a>
+
+                        <a href="/my/id-card/download" class="download-card-btn">
+                            Download ID Card
+                        </a>
                     </div>
                 </div>
             </body>
@@ -381,6 +402,18 @@
                     .logout-btn {
                         background: #875A7B;
                         color: #ffffff;
+                    }
+
+                    .top-actions .download-card-btn {
+                        display: inline-block;
+                        margin-right: 8px;
+                        padding: 12px 20px;
+                        border-radius: 999px;
+                        background: #875A7B;
+                        color: #ffffff;
+                        text-decoration: none;
+                        font-weight: 800;
+                        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
                     }
 
                     .details-wrapper {
@@ -575,9 +608,14 @@
                     <div class="top-actions">
                         <a href="/my" class="back-btn">← Back</a>
 
-                        <a href="/web/session/logout?redirect=/web/login" class="logout-btn">
-                            Logout
-                        </a>
+                        <span>
+                            <a href="/my/id-card/download" class="download-card-btn">
+                                Download ID Card
+                            </a>
+                            <a href="/web/session/logout?redirect=/web/login" class="logout-btn">
+                                Logout
+                            </a>
+                        </span>
                     </div>
 
                     <div class="details-wrapper">

@@ -1,6 +1,6 @@
 import base64
 
-from odoo.http import request, route
+from odoo.http import content_disposition, request, route
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
 
@@ -26,6 +26,32 @@ class MembershipPortal(CustomerPortal):
 
         if not partner.qr_code:
             partner.sudo()._generate_qr_code()
+
+    @route(["/my/id-card/download"], type="http", auth="user", website=False)
+    def download_id_card(self, **kw):
+        partner = request.env.user.partner_id
+
+        if not partner.is_agent and not partner.is_membership:
+            return request.not_found()
+
+        self._ensure_partner_qr_code(partner)
+
+        pdf, _ = request.env["ir.actions.report"].sudo()._render_qweb_pdf(
+            "dsl_membership_loyalty.action_report_membership_agent_card",
+            [partner.id],
+        )
+
+        card_type = "Agent" if partner.is_agent else "Member"
+        filename = "%s ID Card - %s.pdf" % (card_type, partner.name or card_type)
+
+        return request.make_response(
+            pdf,
+            headers=[
+                ("Content-Type", "application/pdf"),
+                ("Content-Length", len(pdf)),
+                ("Content-Disposition", content_disposition(filename)),
+            ],
+        )
 
     @route(['/my/partner-qr/<int:partner_id>'], type='http', auth='user')
     def partner_qr_code_image(self, partner_id, **kw):

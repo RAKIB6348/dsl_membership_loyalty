@@ -274,6 +274,23 @@
                         white-space: nowrap;
                     }
 
+                    .download-card-btn {
+                        display: block;
+                        margin-top: 18px;
+                        padding: 13px 18px;
+                        border-radius: 12px;
+                        background: #875A7B;
+                        color: #ffffff;
+                        text-align: center;
+                        text-decoration: none;
+                        font-size: 15px;
+                        font-weight: 700;
+                    }
+
+                    .download-card-btn:hover {
+                        background: #74496a;
+                    }
+
                     .agent-btn:hover {
                         background: #74496a;
                     }
@@ -498,6 +515,9 @@
                                          class="agent-qr-image"/>
                                 </div>
                             </t>
+                            <a href="/my/id-card/download" class="download-card-btn">
+                                Download ID Card
+                            </a>
                         </div>
 
                         <div class="card member-search">
