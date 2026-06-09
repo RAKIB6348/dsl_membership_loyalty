@@ -4,9 +4,21 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 
 class MembershipPortal(CustomerPortal):
 
+    def _get_member_invoice_domain(self, partner):
+        return [
+            ('partner_id', '=', partner.id),
+            ('move_type', '=', 'out_invoice'),
+        ]
+
+    def _get_member_invoice_count(self, partner):
+        return request.env['account.move'].sudo().search_count(
+            self._get_member_invoice_domain(partner)
+        )
+
     @route(['/my', '/my/home'], type='http', auth='user')
     def home(self, **kw):
         partner = request.env.user.partner_id
+        invoice_count = self._get_member_invoice_count(partner)
 
         values = self._prepare_portal_layout_values()
         values.update({
@@ -16,6 +28,7 @@ class MembershipPortal(CustomerPortal):
             'search_error': False,
             'success_message': False,
             'search_value': '',
+            'invoice_count': invoice_count,
         })
 
         if partner.is_agent:
@@ -157,13 +170,36 @@ class MembershipPortal(CustomerPortal):
     @route(['/my/membership-card'], type='http', auth='user')
     def membership_card_details_page(self, **kw):
         partner = request.env.user.partner_id
+        invoice_count = self._get_member_invoice_count(partner)
 
         values = self._prepare_portal_layout_values()
         values.update({
             'partner': partner,
+            'invoice_count': invoice_count,
         })
 
         return request.render(
             'dsl_membership_loyalty.portal_membership_card_details_template',
+            values
+        )
+
+    @route(['/my/membership-invoices'], type='http', auth='user')
+    def membership_invoice_records_page(self, **kw):
+        partner = request.env.user.partner_id
+
+        invoices = request.env['account.move'].sudo().search(
+            self._get_member_invoice_domain(partner),
+            order='invoice_date desc, id desc'
+        )
+
+        values = self._prepare_portal_layout_values()
+        values.update({
+            'partner': partner,
+            'invoices': invoices,
+            'invoice_count': len(invoices),
+        })
+
+        return request.render(
+            'dsl_membership_loyalty.portal_membership_invoice_records_template',
             values
         )
