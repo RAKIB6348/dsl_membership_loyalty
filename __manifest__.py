@@ -23,7 +23,7 @@ Long description of module's purpose
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        
+
         'data/sequence.xml',
 
         'views/membership_dashboard_views.xml',
@@ -34,7 +34,9 @@ Long description of module's purpose
         'views/membership_portal_templates.xml',
         'views/agent_portal_templates.xml',
         'views/login_template.xml',
-        
+        'wizard/membership_agent_report_wizard_views.xml',
+        'reports/membership_agent_records_report.xml',
+
         'reports/membership_agent_card_report.xml',
     ],
     # only loaded in demonstration mode
@@ -42,4 +44,3 @@ Long description of module's purpose
         'demo/demo.xml',
     ],
 }
-

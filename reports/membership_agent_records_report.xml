@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_membership_agent_records" model="ir.actions.report">
+        <field name="name">Membership / Agent Report</field>
+        <field name="model">membership.agent.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dsl_membership_loyalty.report_ma_records</field>
+        <field name="report_file">dsl_membership_loyalty.report_ma_records</field>
+        <field name="print_report_name">'Membership Agent Report'</field>
+    </record>
+
+    <template id="report_ma_records">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+
+                <div class="page">
+                    <h2 style="text-align:center; margin-bottom: 6px;">
+                        Membership / Agent Report
+                    </h2>
+
+                    <p style="text-align:center; margin-bottom: 20px;">
+                        <strong>From:</strong>
+                        <span t-esc="start_date"/>
+                        &amp;nbsp;&amp;nbsp;
+                        <strong>To:</strong>
+                        <span t-esc="end_date"/>
+                        &amp;nbsp;&amp;nbsp;
+                        <strong>Type:</strong>
+                        <span t-esc="report_type_label"/>
+                    </p>
+
+                    <table class="table table-sm table-bordered" style="width:100%; font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Loyalty Points</th>
+                                <th>Loyalty Amount</th>
+                                <th>Create Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-if="docs">
+                                <t t-foreach="docs" t-as="partner">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="partner_index + 1"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-esc="partner.membership_agent_code or '-'"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-esc="partner.name or '-'"/>
+                                        </td>
+
+                                        <td>
+                                            <t t-if="partner.is_agent">Agent</t>
+                                            <t t-elif="partner.is_membership">Member</t>
+                                            <t t-else="">Contact</t>
+                                        </td>
+
+                                        <td>
+                                            <span t-esc="partner.email or '-'"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-esc="partner.phone or partner.mobile or '-'"/>
+                                        </td>
+
+                                        <td style="text-align:right;">
+                                            <span t-esc="partner.loyalty_points"/>
+                                        </td>
+
+                                        <td style="text-align:right;">
+                                            <span t-esc="'%.2f' % partner.loyalty_amount"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-esc="partner.create_date.strftime('%d/%m/%Y') if partner.create_date else '-'"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="9" style="text-align:center;">
+                                        No records found.
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 20px; text-align: right;">
+                        <strong>Total Records:</strong>
+                        <span t-esc="len(docs)"/>
+                    </div>
+                </div>
+
+            </t>
+        </t>
+    </template>
+
+</odoo>

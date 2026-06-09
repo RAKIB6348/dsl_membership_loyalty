@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_membership_agent_report_wizard_form" model="ir.ui.view">
+        <field name="name">membership.agent.report.wizard.form</field>
+        <field name="model">membership.agent.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Membership / Agent Report">
+                <group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="report_type"/>
+                    </group>
+
+                    <group>
+                        <field name="member_ids"
+                               widget="many2many_tags"
+                               invisible="report_type == 'agent'"/>
+
+                        <field name="agent_ids"
+                               widget="many2many_tags"
+                               invisible="report_type == 'membership'"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button name="action_print_report"
+                            type="object"
+                            string="Print PDF"
+                            class="btn-primary"/>
+
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_membership_agent_report_wizard" model="ir.actions.act_window">
+        <field name="name">Membership / Agent Report</field>
+        <field name="res_model">membership.agent.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Change parent menu id if your root menu id is different -->
+    <menuitem id="menu_membership_agent_reporting"
+              name="Reporting"
+              parent="dsl_membership_loyalty.membership_loyalty_root_menu"
+              sequence="90"/>
+
+    <menuitem id="menu_membership_agent_report"
+              name="Member / Agent Report"
+              parent="dsl_membership_loyalty.menu_membership_agent_reporting"
+              action="action_membership_agent_report_wizard"
+              sequence="10"/>
+
+</odoo>
