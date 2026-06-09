@@ -95,6 +95,37 @@
                         <!-- Body -->
                         <div style="padding: 24px; background: #ffffff;">
 
+                            <!-- Unique Code -->
+                            <div style="
+                                margin-bottom: 18px;
+                                padding: 14px;
+                                border-radius: 16px;
+                                background-color: #fff7ed;
+                                border: 1px solid #fed7aa;
+                                text-align: center;
+                            ">
+                                <div style="
+                                    font-size: 12px;
+                                    color: #9a3412;
+                                    font-weight: bold;
+                                    margin-bottom: 6px;
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.5px;
+                                ">
+                                    <t t-if="partner.is_agent">Agent Code</t>
+                                    <t t-elif="partner.is_membership">Member Code</t>
+                                    <t t-else="">Unique Code</t>
+                                </div>
+
+                                <div style="
+                                    font-size: 22px;
+                                    color: #c05621;
+                                    font-weight: bold;
+                                ">
+                                    <span t-esc="partner.membership_agent_code or '-'"/>
+                                </div>
+                            </div>
+
                             <!-- Info -->
                             <table style="
                                 width: 100%;
