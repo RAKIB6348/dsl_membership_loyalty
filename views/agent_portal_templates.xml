@@ -5,274 +5,593 @@
         <html>
             <head>
                 <title>Agent Dashboard</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
                 <style>
+                    * {
+                        box-sizing: border-box;
+                    }
+
                     body {
                         font-family: Arial, sans-serif;
-                        background: #f4f6f9;
+                        background: #f4f6fb;
                         margin: 0;
-                        padding: 40px;
+                        color: #1f2937;
+                    }
+
+                    .agent-page {
+                        min-height: 100vh;
+                        padding: 32px;
+                    }
+
+                    .top-header {
+                        max-width: 1180px;
+                        margin: 0 auto 24px auto;
+                        background: linear-gradient(135deg, #875A7B, #5f3f63);
+                        color: #ffffff;
+                        border-radius: 20px;
+                        padding: 28px 32px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        box-shadow: 0 12px 30px rgba(135, 90, 123, 0.25);
+                    }
+
+                    .top-header h1 {
+                        margin: 0;
+                        font-size: 30px;
+                        font-weight: 700;
+                    }
+
+                    .top-header p {
+                        margin: 8px 0 0;
+                        opacity: 0.9;
+                    }
+
+                    .logout-btn {
+                        background: rgba(255, 255, 255, 0.16);
+                        color: #ffffff;
+                        padding: 11px 18px;
+                        border-radius: 999px;
+                        text-decoration: none;
+                        border: 1px solid rgba(255, 255, 255, 0.28);
+                        font-weight: 600;
+                    }
+
+                    .logout-btn:hover {
+                        background: #ffffff;
+                        color: #875A7B;
                     }
 
                     .agent-dashboard-wrapper {
-                        max-width: 1100px;
+                        max-width: 1180px;
                         margin: auto;
-                        display: flex;
-                        gap: 25px;
+                        display: grid;
+                        grid-template-columns: 380px 1fr;
+                        gap: 24px;
                     }
 
-                    .agent-info,
-                    .member-search {
+                    .card {
                         background: #ffffff;
-                        border-radius: 12px;
-                        padding: 30px;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+                        border-radius: 20px;
+                        padding: 26px;
+                        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+                        border: 1px solid #eef0f5;
                     }
 
-                    .agent-info {
-                        width: 40%;
+                    .card-title {
+                        margin: 0 0 18px;
+                        font-size: 22px;
+                        font-weight: 700;
+                        color: #111827;
                     }
 
-                    .member-search {
-                        width: 60%;
+                    .agent-profile {
+                        text-align: center;
                     }
 
                     .agent-image,
                     .member-image {
-                        width: 120px;
-                        height: 120px;
+                        width: 118px;
+                        height: 118px;
                         border-radius: 50%;
                         object-fit: cover;
-                        border: 4px solid #875A7B;
-                        margin-bottom: 15px;
+                        border: 5px solid #f3e8ff;
+                        box-shadow: 0 8px 18px rgba(135, 90, 123, 0.18);
                     }
 
-                    .points {
-                        font-size: 34px;
-                        font-weight: bold;
+                    .avatar-placeholder {
+                        width: 118px;
+                        height: 118px;
+                        border-radius: 50%;
+                        margin: 0 auto;
+                        background: #f3e8ff;
+                        color: #875A7B;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 42px;
+                        font-weight: 700;
+                        border: 5px solid #ffffff;
+                        box-shadow: 0 8px 18px rgba(135, 90, 123, 0.18);
+                    }
+
+                    .agent-name {
+                        margin: 16px 0 4px;
+                        font-size: 26px;
+                        font-weight: 700;
+                    }
+
+                    .status-badge {
+                        display: inline-block;
+                        margin-top: 8px;
+                        padding: 6px 12px;
+                        background: #e7f8ee;
+                        color: #16803c;
+                        border-radius: 999px;
+                        font-size: 13px;
+                        font-weight: 700;
+                    }
+
+                    .info-list {
+                        margin-top: 22px;
+                        text-align: left;
+                    }
+
+                    .info-row {
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 16px;
+                        padding: 12px 0;
+                        border-bottom: 1px solid #f0f2f6;
+                        font-size: 14px;
+                    }
+
+                    .info-row strong {
+                        color: #6b7280;
+                        min-width: 80px;
+                    }
+
+                    .info-row span {
+                        color: #111827;
+                        text-align: right;
+                        word-break: break-word;
+                    }
+
+                    .stats-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 14px;
+                        margin-top: 22px;
+                    }
+
+                    .stat-card {
+                        border-radius: 16px;
+                        padding: 18px;
+                        text-align: center;
+                    }
+
+                    .stat-card.points-card {
+                        background: #f3e8ff;
+                    }
+
+                    .stat-card.amount-card {
+                        background: #e8f4ff;
+                    }
+
+                    .stat-label {
+                        font-size: 13px;
+                        color: #6b7280;
+                        font-weight: 700;
+                        margin-bottom: 8px;
+                    }
+
+                    .stat-value {
+                        font-size: 28px;
+                        font-weight: 800;
                         color: #875A7B;
                     }
 
-                    .agent-btn {
-                        margin-top: 15px;
-                        padding: 12px 24px;
-                        border: none;
-                        border-radius: 8px;
-                        background: #875A7B;
-                        color: white;
-                        font-size: 16px;
-                        cursor: pointer;
+                    .search-panel-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 18px;
+                        margin-bottom: 18px;
                     }
 
-                    .error-message {
-                        margin-top: 15px;
-                        color: #dc3545;
-                        font-weight: bold;
+                    .search-panel-header p {
+                        margin: 6px 0 0;
+                        color: #6b7280;
                     }
 
-                    .success-message {
-                        margin-top: 15px;
-                        color: green;
-                        font-weight: bold;
-                    }
-
-                    .member-result {
-                        margin-top: 25px;
-                        padding: 20px;
-                        border-radius: 10px;
-                        background: #f8f9fa;
-                        border-left: 5px solid #875A7B;
+                    .search-box {
+                        display: flex;
+                        gap: 12px;
+                        background: #f8fafc;
+                        padding: 14px;
+                        border-radius: 16px;
+                        border: 1px solid #edf0f5;
                     }
 
                     .form-control {
                         width: 100%;
-                        padding: 10px;
-                        border: 1px solid #ddd;
-                        border-radius: 6px;
-                        margin-top: 6px;
-                        margin-bottom: 10px;
+                        padding: 13px 14px;
+                        border: 1px solid #d8dde8;
+                        border-radius: 12px;
+                        font-size: 15px;
+                        outline: none;
+                        background: #ffffff;
                     }
 
-                    .logout-btn {
-                        position: absolute;
-                        top: 20px;
-                        right: 30px;
+                    .form-control:focus {
+                        border-color: #875A7B;
+                        box-shadow: 0 0 0 3px rgba(135, 90, 123, 0.12);
+                    }
+
+                    .agent-btn {
+                        padding: 13px 22px;
+                        border: none;
+                        border-radius: 12px;
                         background: #875A7B;
-                        color: white;
-                        padding: 10px 18px;
-                        border-radius: 6px;
-                        text-decoration: none;
+                        color: #ffffff;
+                        font-size: 15px;
+                        font-weight: 700;
+                        cursor: pointer;
+                        white-space: nowrap;
+                    }
+
+                    .agent-btn:hover {
+                        background: #74496a;
+                    }
+
+                    .error-message,
+                    .success-message {
+                        margin-top: 16px;
+                        padding: 13px 15px;
+                        border-radius: 12px;
+                        font-weight: 700;
+                    }
+
+                    .error-message {
+                        color: #b42318;
+                        background: #fff1f0;
+                        border: 1px solid #ffd0cc;
+                    }
+
+                    .success-message {
+                        color: #16703c;
+                        background: #ecfdf3;
+                        border: 1px solid #bbf7d0;
+                    }
+
+                    .member-result {
+                        margin-top: 24px;
+                        padding: 22px;
+                        border-radius: 18px;
+                        background: #fbfcff;
+                        border: 1px solid #edf0f5;
+                    }
+
+                    .member-header {
+                        display: flex;
+                        align-items: center;
+                        gap: 18px;
+                        margin-bottom: 18px;
+                    }
+
+                    .member-header h3 {
+                        margin: 0;
+                        font-size: 22px;
+                    }
+
+                    .member-header p {
+                        margin: 6px 0 0;
+                        color: #6b7280;
+                    }
+
+                    .member-details {
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 12px;
+                        margin-bottom: 22px;
+                    }
+
+                    .detail-item {
+                        background: #ffffff;
+                        border: 1px solid #edf0f5;
+                        border-radius: 14px;
+                        padding: 14px;
+                    }
+
+                    .detail-label {
+                        display: block;
+                        color: #6b7280;
+                        font-size: 13px;
+                        font-weight: 700;
+                        margin-bottom: 6px;
+                    }
+
+                    .detail-value {
+                        color: #111827;
+                        font-size: 15px;
+                        font-weight: 600;
+                        word-break: break-word;
+                    }
+
+                    .booking-box {
+                        margin-top: 20px;
+                        padding: 22px;
+                        background: #ffffff;
+                        border-radius: 18px;
+                        border: 1px solid #edf0f5;
+                    }
+
+                    .booking-box h3 {
+                        margin-top: 0;
+                        margin-bottom: 16px;
+                    }
+
+                    .form-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 14px;
+                    }
+
+                    .form-group label {
+                        display: block;
+                        margin-bottom: 7px;
+                        font-weight: 700;
+                        color: #374151;
+                        font-size: 14px;
+                    }
+
+                    .booking-action {
+                        margin-top: 16px;
+                    }
+
+                    @media (max-width: 900px) {
+                        .agent-page {
+                            padding: 18px;
+                        }
+
+                        .top-header {
+                            flex-direction: column;
+                            align-items: flex-start;
+                            gap: 16px;
+                        }
+
+                        .agent-dashboard-wrapper {
+                            grid-template-columns: 1fr;
+                        }
+
+                        .search-box {
+                            flex-direction: column;
+                        }
+
+                        .member-details,
+                        .form-grid {
+                            grid-template-columns: 1fr;
+                        }
                     }
                 </style>
             </head>
 
             <body>
-                <a href="/web/session/logout?redirect=/web/login" class="logout-btn">
-                    Logout
-                </a>
+                <div class="agent-page">
 
-                <h1 style="text-align:center;">Agent Dashboard</h1>
+                    <div class="top-header">
+                        <div>
+                            <h1>Agent Dashboard</h1>
+                            <p>Search members, view loyalty points, and create room bookings.</p>
+                        </div>
 
-                <div class="agent-dashboard-wrapper">
+                        <a href="/web/session/logout?redirect=/web/login" class="logout-btn">
+                            Logout
+                        </a>
+                    </div>
 
-                    <div class="agent-info">
-                        <h2>Agent Information</h2>
-                        <hr />
+                    <div class="agent-dashboard-wrapper">
 
-                        <t t-if="partner.image_1920">
-                            <img t-att-src="'/web/image/res.partner/%s/image_1920' % partner.id"
-                                class="agent-image" />
-                        </t>
+                        <div class="card agent-info">
+                            <div class="agent-profile">
+                                <t t-if="partner.image_1920">
+                                    <img t-att-src="'/web/image/res.partner/%s/image_1920' % partner.id"
+                                         class="agent-image"/>
+                                </t>
+                                <t t-else="">
+                                    <div class="avatar-placeholder">
+                                        <t t-esc="(partner.name or 'A')[:1]"/>
+                                    </div>
+                                </t>
 
-                        <p>
-                            <strong>Name:</strong>
-                            <t t-esc="partner.name" />
-                        </p>
-                        <p>
-                            <strong>Email:</strong>
-                            <t t-esc="partner.email or ''" />
-                        </p>
-                        <p>
-                            <strong>Phone:</strong>
-                            <t t-esc="partner.phone or ''" />
-                        </p>
-                        <p>
-                            <strong>Mobile:</strong>
-                            <t t-esc="partner.mobile or ''" />
-                        </p>
-                        <p><strong>Status:</strong> Active Agent</p>
+                                <h2 class="agent-name">
+                                    <t t-esc="partner.name"/>
+                                </h2>
 
-                        <div style="display:flex; gap:15px; margin-top:20px;">
-                            <div
-                                style="width:50%; background:#f3e8ff; padding:15px; border-radius:10px; text-align:center;">
-                                <h4>Points</h4>
-                                <div class="points">
-                                    <t t-esc="partner.loyalty_points" />
+                                <span class="status-badge">Active Agent</span>
+                            </div>
+
+                            <div class="stats-grid">
+                                <div class="stat-card points-card">
+                                    <div class="stat-label">Loyalty Points</div>
+                                    <div class="stat-value">
+                                        <t t-esc="partner.loyalty_points"/>
+                                    </div>
+                                </div>
+
+                                <div class="stat-card amount-card">
+                                    <div class="stat-label">Amount</div>
+                                    <div class="stat-value">
+                                        <t t-esc="partner.loyalty_amount"/> TK
+                                    </div>
                                 </div>
                             </div>
 
-                            <div
-                                style="width:50%; background:#e8f4ff; padding:15px; border-radius:10px; text-align:center;">
-                                <h4>TK</h4>
-                                <div class="points">
-                                    <t t-esc="partner.loyalty_amount" />
+                            <div class="info-list">
+                                <div class="info-row">
+                                    <strong>Email</strong>
+                                    <span><t t-esc="partner.email or '-'"/></span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>Phone</strong>
+                                    <span><t t-esc="partner.phone or '-'"/></span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>Mobile</strong>
+                                    <span><t t-esc="partner.mobile or '-'"/></span>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="member-search">
-                        <h2>Member Lookup</h2>
-                        <hr />
-
-                        <p>Search member by name, phone or email</p>
-
-                        <form action="/my/agent/member-search" method="post">
-                            <input type="hidden"
-                                name="csrf_token"
-                                t-att-value="request.csrf_token()" />
-
-                            <input type="text"
-                                name="member_search"
-                                class="form-control"
-                                placeholder="Enter member name, phone or email"
-                                t-att-value="search_value or ''" />
-
-                            <button type="submit" class="agent-btn">
-                                Search Member
-                            </button>
-                        </form>
-
-                        <t t-if="search_error">
-                            <div class="error-message">
-                                <t t-esc="search_error" />
+                        <div class="card member-search">
+                            <div class="search-panel-header">
+                                <div>
+                                    <h2 class="card-title">Member Lookup</h2>
+                                    <p>Search member by name, phone, or email address.</p>
+                                </div>
                             </div>
-                        </t>
 
-                        <t t-if="success_message">
-                            <div class="success-message">
-                                <t t-esc="success_message" />
-                            </div>
-                        </t>
+                            <form action="/my/agent/member-search" method="post">
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
 
-                        <t t-if="searched_member">
-                            <div class="member-result">
-                                <h3>Member Information</h3>
-                                <hr />
-
-                                <t t-if="searched_member.image_1920">
-                                    <img
-                                        t-att-src="'/web/image/res.partner/%s/image_1920' % searched_member.id"
-                                        class="member-image" />
-                                </t>
-
-                                <p>
-                                    <strong>Name:</strong>
-                                    <t t-esc="searched_member.name" />
-                                </p>
-                                <p>
-                                    <strong>Email:</strong>
-                                    <t t-esc="searched_member.email or ''" />
-                                </p>
-                                <p>
-                                    <strong>Phone:</strong>
-                                    <t t-esc="searched_member.phone or ''" />
-                                </p>
-                                <p>
-                                    <strong>Mobile:</strong>
-                                    <t t-esc="searched_member.mobile or ''" />
-                                </p>
-                                <p>
-                                    <strong>Loyalty Points:</strong>
-                                    <t t-esc="searched_member.loyalty_points" />
-                                </p>
-                                <p><strong>Loyalty Amount:</strong> <t
-                                        t-esc="searched_member.loyalty_amount" /> TK</p>
-
-                                <hr />
-
-                                <h3>Room Booking</h3>
-
-                                <form action="/my/agent/room-booking" method="post">
-                                    <input type="hidden"
-                                        name="csrf_token"
-                                        t-att-value="request.csrf_token()" />
-
-                                    <input type="hidden"
-                                        name="member_id"
-                                        t-att-value="searched_member.id" />
-
-                                    <label>
-                                        <strong>Room No</strong>
-                                    </label>
+                                <div class="search-box">
                                     <input type="text"
-                                        name="room_no"
-                                        class="form-control"
-                                        placeholder="Enter room number" />
-
-                                    <label>
-                                        <strong>Room Charge</strong>
-                                    </label>
-                                    <input type="number"
-                                        name="room_charge"
-                                        class="form-control"
-                                        placeholder="Enter room charge" />
-
-                                    <label>
-                                        <strong>Use Loyalty Points</strong>
-                                    </label>
-                                    <input type="number"
-                                        name="used_points"
-                                        class="form-control"
-                                        placeholder="Enter points to use" />
+                                           name="member_search"
+                                           class="form-control"
+                                           placeholder="Enter member name, phone or email"
+                                           t-att-value="search_value or ''"/>
 
                                     <button type="submit" class="agent-btn">
-                                        Book Room
+                                        Search Member
                                     </button>
-                                </form>
-                            </div>
-                        </t>
-                    </div>
+                                </div>
+                            </form>
 
+                            <t t-if="search_error">
+                                <div class="error-message">
+                                    <t t-esc="search_error"/>
+                                </div>
+                            </t>
+
+                            <t t-if="success_message">
+                                <div class="success-message">
+                                    <t t-esc="success_message"/>
+                                </div>
+                            </t>
+
+                            <t t-if="searched_member">
+                                <div class="member-result">
+
+                                    <div class="member-header">
+                                        <t t-if="searched_member.image_1920">
+                                            <img t-att-src="'/web/image/res.partner/%s/image_1920' % searched_member.id"
+                                                 class="member-image"/>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="avatar-placeholder">
+                                                <t t-esc="(searched_member.name or 'M')[:1]"/>
+                                            </div>
+                                        </t>
+
+                                        <div>
+                                            <h3>
+                                                <t t-esc="searched_member.name"/>
+                                            </h3>
+                                            <p>Membership customer information</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="member-details">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Email</span>
+                                            <span class="detail-value">
+                                                <t t-esc="searched_member.email or '-'"/>
+                                            </span>
+                                        </div>
+
+                                        <div class="detail-item">
+                                            <span class="detail-label">Phone</span>
+                                            <span class="detail-value">
+                                                <t t-esc="searched_member.phone or '-'"/>
+                                            </span>
+                                        </div>
+
+                                        <div class="detail-item">
+                                            <span class="detail-label">Mobile</span>
+                                            <span class="detail-value">
+                                                <t t-esc="searched_member.mobile or '-'"/>
+                                            </span>
+                                        </div>
+
+                                        <div class="detail-item">
+                                            <span class="detail-label">Loyalty Points</span>
+                                            <span class="detail-value">
+                                                <t t-esc="searched_member.loyalty_points"/>
+                                            </span>
+                                        </div>
+
+                                        <div class="detail-item">
+                                            <span class="detail-label">Loyalty Amount</span>
+                                            <span class="detail-value">
+                                                <t t-esc="searched_member.loyalty_amount"/> TK
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="booking-box">
+                                        <h3>Room Booking</h3>
+
+                                        <form action="/my/agent/room-booking" method="post">
+                                            <input type="hidden"
+                                                   name="csrf_token"
+                                                   t-att-value="request.csrf_token()"/>
+
+                                            <input type="hidden"
+                                                   name="member_id"
+                                                   t-att-value="searched_member.id"/>
+
+                                            <div class="form-grid">
+                                                <div class="form-group">
+                                                    <label>Room No</label>
+                                                    <input type="text"
+                                                           name="room_no"
+                                                           class="form-control"
+                                                           placeholder="Room number"/>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Room Charge</label>
+                                                    <input type="number"
+                                                           name="room_charge"
+                                                           class="form-control"
+                                                           placeholder="Room charge"/>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Use Points</label>
+                                                    <input type="number"
+                                                           name="used_points"
+                                                           class="form-control"
+                                                           placeholder="Points to use"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="booking-action">
+                                                <button type="submit" class="agent-btn">
+                                                    Book Room
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </t>
+                        </div>
+
+                    </div>
                 </div>
             </body>
         </html>
