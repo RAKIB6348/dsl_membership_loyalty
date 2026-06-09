@@ -65,6 +65,13 @@
                             string="Add Loyalty Points"
                             class="btn-primary"
                             invisible="not is_membership"/>
+
+
+                    <button name="action_download_membership_agent_card"
+                            type="object"
+                            string="Download Card"
+                            class="btn-secondary"
+                            invisible="not is_membership and not is_agent"/>
                 </header>
             </xpath>
 

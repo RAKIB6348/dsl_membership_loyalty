@@ -215,3 +215,15 @@ class ResPartner(models.Model):
             self._generate_qr_code()
 
         return res
+    
+    
+    
+    def action_download_membership_agent_card(self):
+        self.ensure_one()
+
+        if not self.qr_code:
+            self._generate_qr_code()
+
+        return self.env.ref(
+            'dsl_membership_loyalty.action_report_membership_agent_card'
+        ).report_action(self)

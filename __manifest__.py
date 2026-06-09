@@ -32,6 +32,8 @@ Long description of module's purpose
         'views/membership_portal_templates.xml',
         'views/agent_portal_templates.xml',
         'views/login_template.xml',
+        
+        'reports/membership_agent_card_report.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
