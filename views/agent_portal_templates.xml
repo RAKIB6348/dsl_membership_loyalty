@@ -171,11 +171,11 @@
                         text-align: center;
                     }
 
-                    .stat-card.points-card {
+                    .points-card {
                         background: #f3e8ff;
                     }
 
-                    .stat-card.amount-card {
+                    .amount-card {
                         background: #e8f4ff;
                     }
 
@@ -190,6 +190,39 @@
                         font-size: 28px;
                         font-weight: 800;
                         color: #875A7B;
+                    }
+
+                    .agent-qr-box,
+                    .member-qr-box {
+                        margin-top: 22px;
+                        padding: 18px;
+                        background: #fbfcff;
+                        border: 1px solid #edf0f5;
+                        border-radius: 18px;
+                        text-align: center;
+                    }
+
+                    .member-qr-box {
+                        margin: 18px 0 22px;
+                        background: #ffffff;
+                    }
+
+                    .agent-qr-box h3,
+                    .member-qr-box h3 {
+                        margin: 0 0 14px;
+                        font-size: 17px;
+                        color: #111827;
+                    }
+
+                    .agent-qr-image,
+                    .member-qr-image {
+                        width: 160px;
+                        height: 160px;
+                        object-fit: contain;
+                        padding: 8px;
+                        background: #ffffff;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 16px;
                     }
 
                     .search-panel-header {
@@ -431,17 +464,33 @@
                             <div class="info-list">
                                 <div class="info-row">
                                     <strong>Email</strong>
-                                    <span><t t-esc="partner.email or '-'"/></span>
+                                    <span>
+                                        <t t-esc="partner.email or '-'"/>
+                                    </span>
                                 </div>
+
                                 <div class="info-row">
                                     <strong>Phone</strong>
-                                    <span><t t-esc="partner.phone or '-'"/></span>
+                                    <span>
+                                        <t t-esc="partner.phone or '-'"/>
+                                    </span>
                                 </div>
+
                                 <div class="info-row">
                                     <strong>Mobile</strong>
-                                    <span><t t-esc="partner.mobile or '-'"/></span>
+                                    <span>
+                                        <t t-esc="partner.mobile or '-'"/>
+                                    </span>
                                 </div>
                             </div>
+
+                            <t t-if="partner.is_agent and partner.qr_code">
+                                <div class="agent-qr-box">
+                                    <h3>Agent QR Code</h3>
+                                    <img t-att-src="'/web/image/res.partner/%s/qr_code?unique=%s' % (partner.id, partner.write_date)"
+                                         class="agent-qr-image"/>
+                                </div>
+                            </t>
                         </div>
 
                         <div class="card member-search">
@@ -540,6 +589,14 @@
                                             </span>
                                         </div>
                                     </div>
+
+                                    <t t-if="searched_member.qr_code">
+                                        <div class="member-qr-box">
+                                            <h3>Member QR Code</h3>
+                                            <img t-att-src="'/my/partner-qr/%s?unique=%s' % (partner.id, partner.write_date)"
+     class="agent-qr-image"/>
+                                        </div>
+                                    </t>
 
                                     <div class="booking-box">
                                         <h3>Room Booking</h3>

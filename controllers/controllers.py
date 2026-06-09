@@ -1,3 +1,5 @@
+import base64
+
 from odoo.http import request, route
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
@@ -15,9 +17,47 @@ class MembershipPortal(CustomerPortal):
             self._get_member_invoice_domain(partner)
         )
 
+    def _ensure_partner_qr_code(self, partner):
+        if partner and partner.exists() and not partner.qr_code:
+            partner.sudo()._generate_qr_code()
+
+    @route(['/my/partner-qr/<int:partner_id>'], type='http', auth='user')
+    def partner_qr_code_image(self, partner_id, **kw):
+        current_partner = request.env.user.partner_id
+        partner = request.env['res.partner'].sudo().browse(partner_id)
+
+        if not partner.exists():
+            return request.not_found()
+
+        # Security: agent can view searched member QR, member can view own QR only
+        if not current_partner.is_agent and partner.id != current_partner.id:
+            return request.not_found()
+
+        self._ensure_partner_qr_code(partner)
+
+        if not partner.qr_code:
+            return request.not_found()
+
+        qr_code = partner.qr_code
+        if isinstance(qr_code, str):
+            qr_code = qr_code.encode('utf-8')
+
+        image_content = base64.b64decode(qr_code)
+
+        return request.make_response(
+            image_content,
+            headers=[
+                ('Content-Type', 'image/png'),
+                ('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0'),
+            ]
+        )
+
     @route(['/my', '/my/home'], type='http', auth='user')
     def home(self, **kw):
         partner = request.env.user.partner_id
+
+        self._ensure_partner_qr_code(partner)
+
         invoice_count = self._get_member_invoice_count(partner)
 
         values = self._prepare_portal_layout_values()
@@ -47,6 +87,8 @@ class MembershipPortal(CustomerPortal):
         partner = request.env.user.partner_id
         search_value = post.get('member_search')
 
+        self._ensure_partner_qr_code(partner)
+
         values = self._prepare_portal_layout_values()
         values.update({
             'partner': partner,
@@ -72,6 +114,7 @@ class MembershipPortal(CustomerPortal):
             ], limit=1)
 
             if searched_member:
+                self._ensure_partner_qr_code(searched_member)
                 values['searched_member'] = searched_member
             else:
                 values['search_error'] = 'No member found.'
@@ -85,12 +128,17 @@ class MembershipPortal(CustomerPortal):
     def agent_room_booking(self, **post):
         agent = request.env.user.partner_id
 
+        self._ensure_partner_qr_code(agent)
+
         member_id = int(post.get('member_id') or 0)
         room_no = post.get('room_no') or ''
         room_charge = float(post.get('room_charge') or 0)
         used_points = int(post.get('used_points') or 0)
 
         member = request.env['res.partner'].sudo().browse(member_id)
+
+        if member.exists():
+            self._ensure_partner_qr_code(member)
 
         values = self._prepare_portal_layout_values()
         values.update({
@@ -170,6 +218,9 @@ class MembershipPortal(CustomerPortal):
     @route(['/my/membership-card'], type='http', auth='user')
     def membership_card_details_page(self, **kw):
         partner = request.env.user.partner_id
+
+        self._ensure_partner_qr_code(partner)
+
         invoice_count = self._get_member_invoice_count(partner)
 
         values = self._prepare_portal_layout_values()
