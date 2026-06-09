@@ -41,7 +41,7 @@
                         type="object"
                         class="oe_stat_button"
                         icon="fa-star"
-                        invisible="not is_membership">
+                        invisible="not is_membership and (not is_agent or loyalty_points &lt;= 0)">
                     <field name="loyalty_points"
                            widget="statinfo"
                            string="Points"/>
