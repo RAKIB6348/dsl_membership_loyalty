@@ -18,7 +18,13 @@ class MembershipPortal(CustomerPortal):
         )
 
     def _ensure_partner_qr_code(self, partner):
-        if partner and partner.exists() and not partner.qr_code:
+        if not partner or not partner.exists():
+            return
+
+        if not partner.membership_agent_code:
+            partner.sudo()._generate_membership_agent_code()
+
+        if not partner.qr_code:
             partner.sudo()._generate_qr_code()
 
     @route(['/my/partner-qr/<int:partner_id>'], type='http', auth='user')

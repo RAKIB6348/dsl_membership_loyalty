@@ -463,6 +463,13 @@
 
                             <div class="info-list">
                                 <div class="info-row">
+                                    <strong>Agent Code</strong>
+                                    <span>
+                                        <t t-esc="partner.membership_agent_code or '-'"/>
+                                    </span>
+                                </div>
+
+                                <div class="info-row">
                                     <strong>Email</strong>
                                     <span>
                                         <t t-esc="partner.email or '-'"/>
@@ -555,6 +562,13 @@
 
                                     <div class="member-details">
                                         <div class="detail-item">
+                                            <span class="detail-label">Member Code</span>
+                                            <span class="detail-value">
+                                                <t t-esc="searched_member.membership_agent_code or '-'"/>
+                                            </span>
+                                        </div>
+
+                                        <div class="detail-item">
                                             <span class="detail-label">Email</span>
                                             <span class="detail-value">
                                                 <t t-esc="searched_member.email or '-'"/>
@@ -593,8 +607,8 @@
                                     <t t-if="searched_member.qr_code">
                                         <div class="member-qr-box">
                                             <h3>Member QR Code</h3>
-                                            <img t-att-src="'/my/partner-qr/%s?unique=%s' % (partner.id, partner.write_date)"
-     class="agent-qr-image"/>
+                                            <img t-att-src="'/my/partner-qr/%s?unique=%s' % (searched_member.id, searched_member.write_date)"
+                                                 class="member-qr-image"/>
                                         </div>
                                     </t>
 

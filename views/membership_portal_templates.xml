@@ -265,6 +265,13 @@
 
                             <div class="card-body">
                                 <div class="info-row">
+                                    <strong>Member Code</strong>
+                                    <span>
+                                        <t t-esc="partner.membership_agent_code or '-'"/>
+                                    </span>
+                                </div>
+
+                                <div class="info-row">
                                     <strong>Email</strong>
                                     <span>
                                         <t t-esc="partner.email or '-'"/>
@@ -602,6 +609,13 @@
                             <h3 class="section-title">Member Information</h3>
 
                             <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Member Code</span>
+                                    <span class="info-value">
+                                        <t t-esc="partner.membership_agent_code or '-'"/>
+                                    </span>
+                                </div>
+
                                 <div class="info-item">
                                     <span class="info-label">Name</span>
                                     <span class="info-value">
