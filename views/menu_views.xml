@@ -22,6 +22,7 @@
     <!-- Root menu for Membership and Loyalty Management -->
     <menuitem id="membership_loyalty_root_menu"
         name="Membership &amp; Loyalty"
+              web_icon="dsl_membership_loyalty,static/description/icon.png"
         sequence="10" />
 
     <!-- Dashboard submenu -->
