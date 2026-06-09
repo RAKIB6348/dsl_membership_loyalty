@@ -12,10 +12,11 @@
                 <attribute name="required">1</attribute>
             </xpath>
 
-            <!-- Add Membership, Agent, Portal User and Loyalty Amount fields after VAT / Tax ID -->
+            <!-- Add Membership, Agent, Unique Code, Portal User and Loyalty Amount fields after VAT / Tax ID -->
             <xpath expr="//field[@name='vat']" position="after">
                 <field name="is_membership"/>
                 <field name="is_agent"/>
+                <field name="membership_agent_code" readonly="1"/>
                 <field name="portal_user_id" readonly="1"/>
                 <field name="loyalty_amount" readonly="1"/>
             </xpath>
@@ -57,7 +58,7 @@
                 </button>
             </xpath>
 
-            <!-- Add Add Loyalty Points button in form header -->
+            <!-- Add buttons in form header -->
             <xpath expr="//form/sheet" position="before">
                 <header>
                     <button name="action_open_loyalty_point_wizard"
@@ -66,6 +67,11 @@
                             class="btn-primary"
                             invisible="not is_membership"/>
 
+                    <button name="action_generate_qr_code"
+                            type="object"
+                            string="Regenerate QR"
+                            class="btn-secondary"
+                            invisible="not is_membership and not is_agent"/>
 
                     <button name="action_download_membership_agent_card"
                             type="object"

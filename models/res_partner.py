@@ -13,6 +13,13 @@ class ResPartner(models.Model):
     is_membership = fields.Boolean(string='Is Membership', default=False)
     is_agent = fields.Boolean(string='Is Agent', default=False)
 
+    membership_agent_code = fields.Char(
+        string='Unique Code',
+        readonly=True,
+        copy=False,
+        index=True
+    )
+
     loyalty_points = fields.Integer(string='Loyalty Points', default=0)
     loyalty_amount = fields.Float(string='Loyalty Amount', default=0.0)
 
@@ -46,12 +53,42 @@ class ResPartner(models.Model):
 
         return 'Contact'
 
+    def _get_unique_code_sequence_code(self):
+        self.ensure_one()
+
+        if self.is_agent:
+            return 'dsl_membership_loyalty.agent_code_sequence'
+
+        if self.is_membership:
+            return 'dsl_membership_loyalty.membership_code_sequence'
+
+        return False
+
+    def _generate_membership_agent_code(self):
+        for partner in self:
+            if not partner.is_membership and not partner.is_agent:
+                continue
+
+            if partner.membership_agent_code:
+                continue
+
+            sequence_code = partner._get_unique_code_sequence_code()
+            if not sequence_code:
+                continue
+
+            code = self.env['ir.sequence'].sudo().next_by_code(sequence_code)
+
+            partner.with_context(skip_code_generation=True).sudo().write({
+                'membership_agent_code': code
+            })
+
     def _prepare_qr_code_text(self):
         self.ensure_one()
 
         user_type = self._get_qr_user_type()
 
         return (
+            f"Code: {self.membership_agent_code or ''}\n"
             f"Name: {self.name or ''}\n"
             f"Type: {user_type}\n"
             f"Email: {self.email or ''}\n"
@@ -67,6 +104,9 @@ class ResPartner(models.Model):
                     'qr_code_text': False,
                 })
                 continue
+
+            if not partner.membership_agent_code:
+                partner._generate_membership_agent_code()
 
             qr_text = partner._prepare_qr_code_text()
 
@@ -136,8 +176,22 @@ class ResPartner(models.Model):
         }
 
     def action_generate_qr_code(self):
+        self._generate_membership_agent_code()
         self._generate_qr_code()
         return True
+
+    def action_download_membership_agent_card(self):
+        self.ensure_one()
+
+        if not self.membership_agent_code:
+            self._generate_membership_agent_code()
+
+        if not self.qr_code:
+            self._generate_qr_code()
+
+        return self.env.ref(
+            'dsl_membership_loyalty.action_report_membership_agent_card'
+        ).report_action(self)
 
     def _create_portal_user(self):
         if self.env.context.get('skip_membership_portal_user'):
@@ -183,6 +237,7 @@ class ResPartner(models.Model):
     def create(self, vals_list):
         partners = super().create(vals_list)
 
+        partners._generate_membership_agent_code()
         partners._create_portal_user()
         partners._update_loyalty_amount()
 
@@ -197,6 +252,10 @@ class ResPartner(models.Model):
         if self.env.context.get('skip_membership_portal_user'):
             return res
 
+        if not self.env.context.get('skip_code_generation'):
+            if vals.get('is_membership') or vals.get('is_agent'):
+                self._generate_membership_agent_code()
+
         if vals.get('is_membership') or vals.get('is_agent') or vals.get('email'):
             self._create_portal_user()
 
@@ -209,21 +268,10 @@ class ResPartner(models.Model):
             'phone',
             'is_membership',
             'is_agent',
+            'membership_agent_code',
         ]
 
         if not self.env.context.get('skip_qr_generation') and any(field in vals for field in qr_trigger_fields):
             self._generate_qr_code()
 
         return res
-    
-    
-    
-    def action_download_membership_agent_card(self):
-        self.ensure_one()
-
-        if not self.qr_code:
-            self._generate_qr_code()
-
-        return self.env.ref(
-            'dsl_membership_loyalty.action_report_membership_agent_card'
-        ).report_action(self)

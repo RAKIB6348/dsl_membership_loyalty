@@ -23,6 +23,8 @@ Long description of module's purpose
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        
+        'data/sequence.xml',
 
         'views/membership_dashboard_views.xml',
         'views/loyalty_configuration_views.xml',
