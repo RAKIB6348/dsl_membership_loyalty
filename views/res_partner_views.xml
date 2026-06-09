@@ -4,7 +4,7 @@
     <record id="view_partner_form_membership_loyalty" model="ir.ui.view">
         <field name="name">res.partner.form.membership.loyalty</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
 
             <!-- Make Email field required -->
@@ -14,32 +14,46 @@
 
             <!-- Add Membership, Agent, Portal User and Loyalty Amount fields after VAT / Tax ID -->
             <xpath expr="//field[@name='vat']" position="after">
-                <field name="is_membership" />
-                <field name="is_agent" />
-                <field name="portal_user_id" readonly="1" />
-                <field name="loyalty_amount" readonly="1" />
+                <field name="is_membership"/>
+                <field name="is_agent"/>
+                <field name="portal_user_id" readonly="1"/>
+                <field name="loyalty_amount" readonly="1"/>
+            </xpath>
+
+            <!-- Show only QR Code image in partner form -->
+            <xpath expr="//sheet/group" position="before">
+                <group string="Membership / Agent QR Code"
+                       invisible="not is_membership and not is_agent">
+                    <div class="text-center">
+                        <field name="qr_code"
+                               widget="image"
+                               nolabel="1"
+                               readonly="1"
+                               options="{'size': [160, 160]}"/>
+                    </div>
+                </group>
             </xpath>
 
             <!-- Add Loyalty Point and Loyalty Amount stat buttons inside button box -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_loyalty_points"
-                    type="object"
-                    class="oe_stat_button"
-                    icon="fa-star"
-                    invisible="not is_membership">
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-star"
+                        invisible="not is_membership">
                     <field name="loyalty_points"
-                        widget="statinfo"
-                        string="Points" />
+                           widget="statinfo"
+                           string="Points"/>
                 </button>
 
                 <button name="action_view_loyalty_amount"
-                    type="object"
-                    class="oe_stat_button"
-                    icon="fa-money"
-                    invisible="not is_membership">
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-money"
+                        invisible="not is_membership">
                     <field name="loyalty_amount"
-                        widget="statinfo"
-                        string="TK" />
+                           widget="statinfo"
+                           string="TK"/>
                 </button>
             </xpath>
 
@@ -47,10 +61,10 @@
             <xpath expr="//form/sheet" position="before">
                 <header>
                     <button name="action_open_loyalty_point_wizard"
-                        type="object"
-                        string="Add Loyalty Points"
-                        class="btn-primary"
-                        invisible="not is_membership" />
+                            type="object"
+                            string="Add Loyalty Points"
+                            class="btn-primary"
+                            invisible="not is_membership"/>
                 </header>
             </xpath>
 

@@ -1,3 +1,8 @@
+import base64
+from io import BytesIO
+
+import qrcode
+
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -17,6 +22,74 @@ class ResPartner(models.Model):
         readonly=True,
         copy=False
     )
+
+    qr_code = fields.Binary(
+        string='QR Code',
+        readonly=True,
+        copy=False
+    )
+
+    qr_code_text = fields.Char(
+        string='QR Code Text',
+        readonly=True,
+        copy=False
+    )
+
+    def _get_qr_user_type(self):
+        self.ensure_one()
+
+        if self.is_agent:
+            return 'Agent'
+
+        if self.is_membership:
+            return 'Membership'
+
+        return 'Contact'
+
+    def _prepare_qr_code_text(self):
+        self.ensure_one()
+
+        user_type = self._get_qr_user_type()
+
+        return (
+            f"Name: {self.name or ''}\n"
+            f"Type: {user_type}\n"
+            f"Email: {self.email or ''}\n"
+            f"Phone: {self.phone or ''}\n"
+            f"Partner ID: {self.id}"
+        )
+
+    def _generate_qr_code(self):
+        for partner in self:
+            if not partner.is_membership and not partner.is_agent:
+                partner.with_context(skip_qr_generation=True).sudo().write({
+                    'qr_code': False,
+                    'qr_code_text': False,
+                })
+                continue
+
+            qr_text = partner._prepare_qr_code_text()
+
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_M,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(qr_text)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill_color="black", back_color="white")
+
+            buffer = BytesIO()
+            img.save(buffer, format='PNG')
+
+            qr_code_base64 = base64.b64encode(buffer.getvalue())
+
+            partner.with_context(skip_qr_generation=True).sudo().write({
+                'qr_code': qr_code_base64,
+                'qr_code_text': qr_text,
+            })
 
     def _update_loyalty_amount(self):
         config = self.env['loyalty.configuration'].search([
@@ -62,6 +135,10 @@ class ResPartner(models.Model):
             'target': 'current',
         }
 
+    def action_generate_qr_code(self):
+        self._generate_qr_code()
+        return True
+
     def _create_portal_user(self):
         if self.env.context.get('skip_membership_portal_user'):
             return
@@ -105,8 +182,13 @@ class ResPartner(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         partners = super().create(vals_list)
+
         partners._create_portal_user()
         partners._update_loyalty_amount()
+
+        if not self.env.context.get('skip_qr_generation'):
+            partners._generate_qr_code()
+
         return partners
 
     def write(self, vals):
@@ -120,5 +202,16 @@ class ResPartner(models.Model):
 
         if 'loyalty_points' in vals:
             self._update_loyalty_amount()
+
+        qr_trigger_fields = [
+            'name',
+            'email',
+            'phone',
+            'is_membership',
+            'is_agent',
+        ]
+
+        if not self.env.context.get('skip_qr_generation') and any(field in vals for field in qr_trigger_fields):
+            self._generate_qr_code()
 
         return res
