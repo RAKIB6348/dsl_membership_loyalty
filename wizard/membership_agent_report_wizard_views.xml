@@ -49,7 +49,7 @@
     <menuitem id="menu_membership_agent_reporting"
               name="Reporting"
               parent="dsl_membership_loyalty.membership_loyalty_root_menu"
-              sequence="90"/>
+              sequence="25"/>
 
     <menuitem id="menu_membership_agent_report"
               name="Member / Agent Report"
