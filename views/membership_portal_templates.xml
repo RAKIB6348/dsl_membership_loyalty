@@ -230,6 +230,73 @@
                         color: #ffffff;
                     }
 
+                    .password-box {
+                        margin: 0 26px 26px;
+                        padding: 20px;
+                        background: #fbfcff;
+                        border: 1px solid #edf0f5;
+                        border-radius: 18px;
+                    }
+
+                    .password-box h3 {
+                        margin: 0 0 16px;
+                        font-size: 18px;
+                    }
+
+                    .password-box .form-group {
+                        margin-bottom: 13px;
+                    }
+
+                    .password-box label {
+                        display: block;
+                        margin-bottom: 6px;
+                        color: #4b5563;
+                        font-size: 14px;
+                        font-weight: 700;
+                    }
+
+                    .password-box .form-control {
+                        width: 100%;
+                        padding: 12px 13px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 10px;
+                        font-size: 15px;
+                    }
+
+                    .password-submit-btn {
+                        width: 100%;
+                        padding: 13px 18px;
+                        border: 0;
+                        border-radius: 12px;
+                        background: #875A7B;
+                        color: #ffffff;
+                        font-size: 15px;
+                        font-weight: 800;
+                        cursor: pointer;
+                    }
+
+                    .password-submit-btn:hover {
+                        background: #74496a;
+                    }
+
+                    .password-error,
+                    .password-success {
+                        margin-top: 14px;
+                        padding: 12px 14px;
+                        border-radius: 10px;
+                        font-weight: 700;
+                    }
+
+                    .password-error {
+                        background: #fef2f2;
+                        color: #b91c1c;
+                    }
+
+                    .password-success {
+                        background: #ecfdf5;
+                        color: #047857;
+                    }
+
                     @media (max-width: 520px) {
                         .summary-grid {
                             grid-template-columns: 1fr;
@@ -343,6 +410,61 @@
                         <a href="/my/id-card/download" class="download-card-btn">
                             Download ID Card
                         </a>
+
+                        <div class="password-box">
+                            <h3>Change Password</h3>
+
+                            <form action="/my/change-password" method="post">
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+
+                                <div class="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password"
+                                           name="current_password"
+                                           class="form-control"
+                                           placeholder="Enter current password"
+                                           required="required"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>New Password</label>
+                                    <input type="password"
+                                           name="new_password"
+                                           class="form-control"
+                                           placeholder="Enter new password"
+                                           minlength="6"
+                                           required="required"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Confirm Password</label>
+                                    <input type="password"
+                                           name="confirm_password"
+                                           class="form-control"
+                                           placeholder="Confirm new password"
+                                           minlength="6"
+                                           required="required"/>
+                                </div>
+
+                                <button type="submit" class="password-submit-btn">
+                                    Update Password
+                                </button>
+                            </form>
+
+                            <t t-if="password_error">
+                                <div class="password-error">
+                                    <t t-esc="password_error"/>
+                                </div>
+                            </t>
+
+                            <t t-if="password_success">
+                                <div class="password-success">
+                                    <t t-esc="password_success"/>
+                                </div>
+                            </t>
+                        </div>
                     </div>
                 </div>
             </body>

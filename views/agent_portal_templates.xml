@@ -274,6 +274,10 @@
                         white-space: nowrap;
                     }
 
+                    .agent-btn:hover {
+                        background: #74496a;
+                    }
+
                     .download-card-btn {
                         display: block;
                         margin-top: 18px;
@@ -291,8 +295,28 @@
                         background: #74496a;
                     }
 
-                    .agent-btn:hover {
-                        background: #74496a;
+                    .password-box {
+                        margin-top: 18px;
+                        padding: 18px;
+                        background: #fbfcff;
+                        border: 1px solid #edf0f5;
+                        border-radius: 18px;
+                        text-align: left;
+                    }
+
+                    .password-box h3 {
+                        margin: 0 0 14px;
+                        font-size: 17px;
+                        color: #111827;
+                    }
+
+                    .password-box .form-group {
+                        margin-bottom: 12px;
+                    }
+
+                    .password-box .agent-btn {
+                        width: 100%;
+                        margin-top: 4px;
                     }
 
                     .error-message,
@@ -515,9 +539,65 @@
                                          class="agent-qr-image"/>
                                 </div>
                             </t>
+
                             <a href="/my/id-card/download" class="download-card-btn">
                                 Download ID Card
                             </a>
+
+                            <div class="password-box">
+                                <h3>Change Password</h3>
+
+                                <form action="/my/agent/change-password" method="post">
+                                    <input type="hidden"
+                                           name="csrf_token"
+                                           t-att-value="request.csrf_token()"/>
+
+                                    <div class="form-group">
+                                        <label>Current Password</label>
+                                        <input type="password"
+                                               name="current_password"
+                                               class="form-control"
+                                               placeholder="Enter current password"
+                                               required="required"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>New Password</label>
+                                        <input type="password"
+                                               name="new_password"
+                                               class="form-control"
+                                               placeholder="Enter new password"
+                                               minlength="6"
+                                               required="required"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Confirm Password</label>
+                                        <input type="password"
+                                               name="confirm_password"
+                                               class="form-control"
+                                               placeholder="Confirm new password"
+                                               minlength="6"
+                                               required="required"/>
+                                    </div>
+
+                                    <button type="submit" class="agent-btn">
+                                        Update Password
+                                    </button>
+                                </form>
+
+                                <t t-if="password_error">
+                                    <div class="error-message">
+                                        <t t-esc="password_error"/>
+                                    </div>
+                                </t>
+
+                                <t t-if="password_success">
+                                    <div class="success-message">
+                                        <t t-esc="password_success"/>
+                                    </div>
+                                </t>
+                            </div>
                         </div>
 
                         <div class="card member-search">

@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import base64
 
+from odoo.exceptions import AccessDenied, UserError
 from odoo.http import content_disposition, request, route
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
@@ -26,6 +29,66 @@ class MembershipPortal(CustomerPortal):
 
         if not partner.qr_code:
             partner.sudo()._generate_qr_code()
+
+    def _get_agent_dashboard_values(self, partner, **extra_values):
+        values = self._prepare_portal_layout_values()
+        values.update({
+            'partner': partner,
+            'page_name': 'home',
+            'searched_member': False,
+            'search_error': False,
+            'success_message': False,
+            'password_error': False,
+            'password_success': False,
+            'search_value': '',
+            'invoice_count': self._get_member_invoice_count(partner),
+        })
+        values.update(extra_values)
+        return values
+
+    def _get_member_dashboard_values(self, partner, **extra_values):
+        values = self._prepare_portal_layout_values()
+        values.update({
+            'partner': partner,
+            'page_name': 'home',
+            'searched_member': False,
+            'search_error': False,
+            'success_message': False,
+            'password_error': False,
+            'password_success': False,
+            'search_value': '',
+            'invoice_count': self._get_member_invoice_count(partner),
+        })
+        values.update(extra_values)
+        return values
+
+    def _update_portal_password(self, current_password, new_password, confirm_password):
+        if not current_password:
+            return 'Current password is required.', False
+
+        if not new_password:
+            return 'New password is required.', False
+
+        if len(new_password) < 6:
+            return 'New password must be at least 6 characters.', False
+
+        if new_password != confirm_password:
+            return 'New password and confirm password do not match.', False
+
+        try:
+            request.env['res.users'].change_password(current_password, new_password)
+
+            # Password changes invalidate the current token; refresh it to keep
+            # the portal session authenticated.
+            request.session.session_token = request.env.user._compute_session_token(
+                request.session.sid
+            )
+        except AccessDenied:
+            return 'Current password is incorrect.', False
+        except UserError as error:
+            return str(error), False
+
+        return False, 'Password changed successfully.'
 
     @route(["/my/id-card/download"], type="http", auth="user", website=False)
     def download_id_card(self, **kw):
@@ -85,7 +148,6 @@ class MembershipPortal(CustomerPortal):
         if not partner.exists():
             return request.not_found()
 
-        # Security: agent can view searched member QR, member can view own QR only
         if not current_partner.is_agent and partner.id != current_partner.id:
             return request.not_found()
 
@@ -114,45 +176,28 @@ class MembershipPortal(CustomerPortal):
 
         self._ensure_partner_qr_code(partner)
 
-        invoice_count = self._get_member_invoice_count(partner)
-
-        values = self._prepare_portal_layout_values()
-        values.update({
-            'partner': partner,
-            'page_name': 'home',
-            'searched_member': False,
-            'search_error': False,
-            'success_message': False,
-            'search_value': '',
-            'invoice_count': invoice_count,
-        })
-
         if partner.is_agent:
             return request.render(
                 'dsl_membership_loyalty.portal_agent_dashboard_template',
-                values
+                self._get_agent_dashboard_values(partner)
             )
 
         return request.render(
             'dsl_membership_loyalty.portal_membership_card_template',
-            values
+            self._get_member_dashboard_values(partner)
         )
 
     @route(['/my/agent/member-search'], type='http', auth='user', methods=['POST'])
     def agent_member_search(self, **post):
         partner = request.env.user.partner_id
-        search_value = post.get('member_search')
+        search_value = post.get('member_search') or ''
 
         self._ensure_partner_qr_code(partner)
 
-        values = self._prepare_portal_layout_values()
-        values.update({
-            'partner': partner,
-            'searched_member': False,
-            'search_error': False,
-            'success_message': False,
-            'search_value': search_value,
-        })
+        values = self._get_agent_dashboard_values(
+            partner,
+            search_value=search_value,
+        )
 
         if not partner.is_agent:
             values['search_error'] = 'Only agents can search members.'
@@ -196,14 +241,10 @@ class MembershipPortal(CustomerPortal):
         if member.exists():
             self._ensure_partner_qr_code(member)
 
-        values = self._prepare_portal_layout_values()
-        values.update({
-            'partner': agent,
-            'searched_member': member,
-            'search_error': False,
-            'success_message': False,
-            'search_value': '',
-        })
+        values = self._get_agent_dashboard_values(
+            agent,
+            searched_member=member,
+        )
 
         if not agent.is_agent:
             values['search_error'] = 'Only agents can book rooms.'
@@ -270,6 +311,41 @@ class MembershipPortal(CustomerPortal):
             'dsl_membership_loyalty.portal_agent_dashboard_template',
             values
         )
+
+    @route(
+        ['/my/change-password', '/my/agent/change-password'],
+        type='http',
+        auth='user',
+        methods=['POST'],
+        website=False,
+    )
+    def portal_change_password(self, **post):
+        partner = request.env.user.partner_id
+
+        if not partner.is_agent and not partner.is_membership:
+            return request.not_found()
+
+        self._ensure_partner_qr_code(partner)
+
+        password_error, password_success = self._update_portal_password(
+            (post.get('current_password') or '').strip(),
+            (post.get('new_password') or '').strip(),
+            (post.get('confirm_password') or '').strip(),
+        )
+
+        if partner.is_agent:
+            template = 'dsl_membership_loyalty.portal_agent_dashboard_template'
+            values = self._get_agent_dashboard_values(partner)
+        else:
+            template = 'dsl_membership_loyalty.portal_membership_card_template'
+            values = self._get_member_dashboard_values(partner)
+
+        values.update({
+            'password_error': password_error,
+            'password_success': password_success,
+        })
+
+        return request.render(template, values)
 
     @route(['/my/membership-card'], type='http', auth='user')
     def membership_card_details_page(self, **kw):
