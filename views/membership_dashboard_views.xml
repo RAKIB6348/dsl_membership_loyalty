@@ -4,159 +4,508 @@
         <field name="name">membership.dashboard.form</field>
         <field name="model">membership.dashboard</field>
         <field name="arch" type="xml">
-            <form string="Membership Dashboard" create="0" edit="0">
-                <sheet>
+            <form string="Membership Dashboard" create="0" edit="0" delete="0" class="membership-dashboard-form">
+                <sheet class="membership-dashboard-sheet">
                     <style>
-                        .membership-dashboard {
-                            padding: 24px 20px;
-                            background: #f8fafc;
-                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                        .membership-dashboard-form .o_form_sheet_bg {
+                            padding: 0 !important;
+                            background: #f5f7fb;
                         }
-                        .dash-header {
-                            display: flex; justify-content: space-between; align-items: center;
-                            margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;
-                        }
-                        .dash-title { font-size: 28px; font-weight: 700; color: #1e2937; margin: 0; }
-                        .dash-subtitle { color: #64748b; font-size: 15px; margin-top: 4px; }
 
-                        .live-badge {
-                            background: #dcfce7; color: #166534; font-weight: 700; font-size: 13px;
-                            padding: 6px 16px; border-radius: 9999px; display: flex; align-items: center; gap: 8px;
+                        .membership-dashboard-sheet {
+                            width: 100% !important;
+                            max-width: none !important;
+                            min-height: 100%;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            overflow: hidden;
+                            border: 0 !important;
+                            border-radius: 0;
+                            background: #f5f7fb;
+                            box-shadow: none;
                         }
-                        .live-dot {
-                            width: 9px; height: 9px; background: #22c55e; border-radius: 50%;
-                            animation: pulse 2s infinite;
+
+                        .membership-dashboard {
+                            min-height: 720px;
+                            padding: 30px;
+                            color: #172033;
+                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                        }
+
+                        .dashboard-hero {
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 24px;
+                            padding: 30px 34px;
+                            overflow: hidden;
+                            border-radius: 20px;
+                            color: #ffffff;
+                            background: linear-gradient(135deg, #714b67 0%, #875a7b 55%, #ab779d 100%);
+                            box-shadow: 0 16px 32px rgba(113, 75, 103, 0.24);
+                        }
+
+                        .dashboard-hero:after {
+                            content: "";
+                            position: absolute;
+                            top: -90px;
+                            right: -45px;
+                            width: 260px;
+                            height: 260px;
+                            border: 48px solid rgba(255, 255, 255, 0.08);
+                            border-radius: 50%;
+                        }
+
+                        .hero-copy,
+                        .hero-status {
+                            position: relative;
+                            z-index: 1;
+                        }
+
+                        .hero-eyebrow {
+                            margin-bottom: 8px;
+                            color: rgba(255, 255, 255, 0.78);
+                            font-size: 12px;
+                            font-weight: 800;
+                            letter-spacing: 1.4px;
+                            text-transform: uppercase;
+                        }
+
+                        .hero-title {
+                            margin: 0;
+                            color: #ffffff;
+                            font-size: 31px;
+                            font-weight: 800;
+                            letter-spacing: -0.7px;
+                        }
+
+                        .hero-subtitle {
+                            max-width: 650px;
+                            margin: 9px 0 0;
+                            color: rgba(255, 255, 255, 0.83);
+                            font-size: 15px;
+                            line-height: 1.6;
+                        }
+
+                        .hero-status {
+                            display: flex;
+                            align-items: center;
+                            gap: 9px;
+                            padding: 10px 15px;
+                            border: 1px solid rgba(255, 255, 255, 0.22);
+                            border-radius: 999px;
+                            background: rgba(255, 255, 255, 0.13);
+                            font-size: 12px;
+                            font-weight: 800;
+                            white-space: nowrap;
+                        }
+
+                        .status-dot {
+                            width: 9px;
+                            height: 9px;
+                            border-radius: 50%;
+                            background: #86efac;
+                            box-shadow: 0 0 0 5px rgba(134, 239, 172, 0.16);
+                        }
+
+                        .dashboard-section {
+                            margin-top: 28px;
+                        }
+
+                        .section-heading {
+                            display: flex;
+                            align-items: flex-end;
+                            justify-content: space-between;
+                            gap: 16px;
+                            margin: 0 2px 14px;
                         }
 
                         .section-title {
-                            font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
-                            color: #64748b; margin: 32px 0 16px 4px;
+                            margin: 0;
+                            color: #172033;
+                            font-size: 17px;
+                            font-weight: 800;
                         }
 
-                        .kpi-grid {
-                            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;
+                        .section-note {
+                            color: #7b8497;
+                            font-size: 12px;
                         }
-                        .kpi-card {
-                            background: white; border-radius: 16px; padding: 24px;
-                            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); transition: all 0.2s;
-                        }
-                        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
 
-                        .kpi-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-                        .kpi-icon {
-                            width: 52px; height: 52px; border-radius: 12px; display: flex;
-                            align-items: center; justify-content: center; font-size: 26px;
+                        .metric-grid {
+                            display: grid;
+                            grid-template-columns: repeat(4, minmax(0, 1fr));
+                            gap: 16px;
                         }
-                        .kpi-value { font-size: 38px; font-weight: 800; color: #0f172a; margin: 8px 0 6px; }
-                        .kpi-label { color: #64748b; font-size: 14.5px; font-weight: 500; }
 
-                        .trend {
-                            font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 999px;
+                        .metric-card {
+                            position: relative;
+                            min-height: 188px;
+                            padding: 21px;
+                            overflow: hidden;
+                            border: 1px solid #e7eaf0;
+                            border-radius: 17px;
+                            background: #ffffff;
+                            box-shadow: 0 7px 20px rgba(15, 23, 42, 0.045);
+                            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
                         }
-                        .trend-up { background: #dcfce7; color: #166534; }
-                        .trend-down { background: #fee2e2; color: #b91c1c; }
 
-                        .btn-link {
-                            color: #2563eb; font-weight: 600; font-size: 13.5px; margin-top: 12px;
-                            text-decoration: none;
+                        .metric-card:hover {
+                            transform: translateY(-3px);
+                            border-color: #d8c6d3;
+                            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.09);
                         }
-                        .btn-link:hover { color: #1e40af; }
 
-                        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+                        .metric-card:before {
+                            content: "";
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 4px;
+                            background: var(--accent);
+                        }
+
+                        .accent-purple { --accent: #875a7b; --soft: #f4eaf1; }
+                        .accent-blue { --accent: #3974d8; --soft: #eaf2ff; }
+                        .accent-green { --accent: #16866f; --soft: #e7f7f2; }
+                        .accent-amber { --accent: #d48a1f; --soft: #fff4df; }
+                        .accent-red { --accent: #c95858; --soft: #fdecec; }
+                        .accent-indigo { --accent: #6557c7; --soft: #efedff; }
+
+                        .metric-top {
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: space-between;
+                            gap: 14px;
+                        }
+
+                        .metric-icon {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 46px;
+                            height: 46px;
+                            border-radius: 13px;
+                            color: var(--accent);
+                            background: var(--soft);
+                            font-size: 20px;
+                        }
+
+                        .metric-value {
+                            margin-top: 18px;
+                            color: #111827;
+                            font-size: 33px;
+                            font-weight: 800;
+                            line-height: 1;
+                            letter-spacing: -0.7px;
+                        }
+
+                        .metric-value .o_field_widget {
+                            color: inherit;
+                            font-size: inherit;
+                            font-weight: inherit;
+                        }
+
+                        .metric-suffix {
+                            margin-left: 2px;
+                            color: #596174;
+                            font-size: 18px;
+                            font-weight: 700;
+                        }
+
+                        .metric-label {
+                            margin-top: 8px;
+                            color: #596174;
+                            font-size: 13px;
+                            font-weight: 700;
+                        }
+
+                        .metric-caption {
+                            min-height: 18px;
+                            margin-top: 5px;
+                            color: #939aaa;
+                            font-size: 11px;
+                        }
+
+                        .metric-action {
+                            margin-top: 13px;
+                            padding: 0;
+                            border: 0;
+                            color: var(--accent);
+                            background: transparent;
+                            box-shadow: none;
+                            font-size: 12px;
+                            font-weight: 800;
+                        }
+
+                        .metric-action:hover,
+                        .metric-action:focus {
+                            color: var(--accent);
+                            background: transparent;
+                            text-decoration: underline;
+                        }
+
+                        .insight-grid {
+                            display: grid;
+                            grid-template-columns: repeat(3, minmax(0, 1fr));
+                            gap: 16px;
+                        }
+
+                        .insight-card {
+                            padding: 22px;
+                            border: 1px solid #e7eaf0;
+                            border-radius: 17px;
+                            background: #ffffff;
+                            box-shadow: 0 7px 20px rgba(15, 23, 42, 0.045);
+                        }
+
+                        .insight-header {
+                            display: flex;
+                            align-items: center;
+                            gap: 11px;
+                            margin-bottom: 18px;
+                        }
+
+                        .insight-icon {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 38px;
+                            height: 38px;
+                            border-radius: 11px;
+                            color: #875a7b;
+                            background: #f4eaf1;
+                            font-size: 16px;
+                        }
+
+                        .insight-title {
+                            color: #273044;
+                            font-size: 13px;
+                            font-weight: 800;
+                        }
+
+                        .insight-row {
+                            display: flex;
+                            align-items: baseline;
+                            justify-content: space-between;
+                            gap: 15px;
+                            padding: 10px 0;
+                            border-bottom: 1px solid #eef0f4;
+                        }
+
+                        .insight-row:last-of-type {
+                            border-bottom: 0;
+                        }
+
+                        .insight-label {
+                            color: #737b8d;
+                            font-size: 12px;
+                        }
+
+                        .insight-value {
+                            color: #172033;
+                            font-size: 18px;
+                            font-weight: 800;
+                        }
+
+                        .insight-value .o_field_widget {
+                            color: inherit;
+                            font-size: inherit;
+                            font-weight: inherit;
+                        }
+
+                        @media (max-width: 1200px) {
+                            .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+                        }
+
+                        @media (max-width: 900px) {
+                            .insight-grid { grid-template-columns: 1fr; }
+                            .dashboard-hero { align-items: flex-start; flex-direction: column; }
+                        }
+
+                        @media (max-width: 620px) {
+                            .membership-dashboard { padding: 16px; }
+                            .dashboard-hero { padding: 24px; }
+                            .hero-title { font-size: 25px; }
+                            .metric-grid { grid-template-columns: 1fr; }
+                            .section-heading { align-items: flex-start; flex-direction: column; }
+                        }
                     </style>
 
                     <div class="membership-dashboard">
-
-                        <!-- Header -->
-                        <div class="dash-header">
-                            <div>
-                                <h1 class="dash-title">Membership Dashboard</h1>
-                                <p class="dash-subtitle">Real-time overview of membership performance and growth</p>
+                        <div class="dashboard-hero">
+                            <div class="hero-copy">
+                                <div class="hero-eyebrow">Operations overview</div>
+                                <h1 class="hero-title">Membership Dashboard</h1>
+                                <p class="hero-subtitle">
+                                    Monitor member acquisition, agent activity, portal access, and loyalty balances from one place.
+                                </p>
                             </div>
-                            <div class="live-badge">
-                                <span class="live-dot"></span>
-                                LIVE
-                            </div>
-                        </div>
-
-                        <!-- Overview -->
-                        <div class="section-title">Overview</div>
-                        <div class="kpi-grid">
-                            <div class="kpi-card">
-                                <div class="kpi-header">
-                                    <div class="kpi-icon" style="background:#dbeafe; color:#1e40af;">
-                                        <i class="fa fa-users fa-2x"></i>
-                                    </div>
-                                    <span class="trend trend-up">↑ 12%</span>
-                                </div>
-                                <div class="kpi-value"><field name="total_members"/></div>
-                                <div class="kpi-label">Total Members</div>
-                                <button name="action_view_members" type="object" class="btn-link">View All Members →</button>
-                            </div>
-
-                            <div class="kpi-card">
-                                <div class="kpi-header">
-                                    <div class="kpi-icon" style="background:#ecfdf5; color:#0f766e;">
-                                        <i class="fa fa-handshake-o fa-2x"></i>
-                                    </div>
-                                    <span class="trend trend-up">↑ 8%</span>
-                                </div>
-                                <div class="kpi-value"><field name="total_agents"/></div>
-                                <div class="kpi-label">Total Agents</div>
-                                <button name="action_view_agents" type="object" class="btn-link">View All Agents →</button>
-                            </div>
-
-                            <div class="kpi-card">
-                                <div class="kpi-header">
-                                    <div class="kpi-icon" style="background:#f3e8ff; color:#6b21a8;">
-                                        <i class="fa fa-globe fa-2x"></i>
-                                    </div>
-                                    <span class="trend trend-up">↑ 21%</span>
-                                </div>
-                                <div class="kpi-value"><field name="total_portal_users"/></div>
-                                <div class="kpi-label">Active Portal Users</div>
-                                <button name="action_view_portal_users" type="object" class="btn-link">View Portal Activity →</button>
-                            </div>
-
-                            <div class="kpi-card">
-                                <div class="kpi-header">
-                                    <div class="kpi-icon" style="background:#fef3c7; color:#854d0e;">
-                                        <i class="fa fa-line-chart fa-2x"></i>
-                                    </div>
-                                </div>
-                                <div class="kpi-value"><field name="growth_rate"/>%</div>
-                                <div class="kpi-label">Monthly Growth Rate</div>
+                            <div class="hero-status">
+                                <span class="status-dot"></span>
+                                Live database totals
                             </div>
                         </div>
 
-                        <!-- Today's Performance -->
-                        <div class="section-title">Today's Performance</div>
-                        <div class="kpi-grid">
-                            <div class="kpi-card">
-                                <div class="kpi-header">
-                                    <div class="kpi-icon" style="background:#ede9fe; color:#4f46e5;">
-                                        <i class="fa fa-user-plus fa-2x"></i>
-                                    </div>
-                                </div>
-                                <div class="kpi-value"><field name="today_members"/></div>
-                                <div class="kpi-label">New Members Today</div>
-                                <div class="trend trend-up" style="margin-top:8px;">Target Progress: 62%</div>
-                                <button name="action_view_today_members" type="object" class="btn-link">View Today's Members →</button>
+                        <section class="dashboard-section">
+                            <div class="section-heading">
+                                <h2 class="section-title">Network Overview</h2>
+                                <span class="section-note">Current membership and access totals</span>
                             </div>
 
-                            <div class="kpi-card">
-                                <div class="kpi-header">
-                                    <div class="kpi-icon" style="background:#fee2e2; color:#b91c1c;">
-                                        <i class="fa fa-user-plus fa-2x"></i>
+                            <div class="metric-grid">
+                                <div class="metric-card accent-purple">
+                                    <div class="metric-top">
+                                        <div class="metric-icon"><i class="fa fa-users" title="Members"/></div>
                                     </div>
+                                    <div class="metric-value"><field name="total_members"/></div>
+                                    <div class="metric-label">Total Members</div>
+                                    <div class="metric-caption">All active membership profiles</div>
+                                    <button name="action_view_members" type="object" class="metric-action">Open members <i class="fa fa-arrow-right"/></button>
                                 </div>
-                                <div class="kpi-value"><field name="today_agents"/></div>
-                                <div class="kpi-label">New Agents Today</div>
-                                <div class="trend trend-down" style="margin-top:8px;">Target Progress: 35%</div>
-                                <button name="action_view_today_agents" type="object" class="btn-link">View Today's Agents →</button>
-                            </div>
-                        </div>
 
+                                <div class="metric-card accent-blue">
+                                    <div class="metric-top">
+                                        <div class="metric-icon"><i class="fa fa-handshake-o" title="Agents"/></div>
+                                    </div>
+                                    <div class="metric-value"><field name="total_agents"/></div>
+                                    <div class="metric-label">Total Agents</div>
+                                    <div class="metric-caption">Registered service agents</div>
+                                    <button name="action_view_agents" type="object" class="metric-action">Open agents <i class="fa fa-arrow-right"/></button>
+                                </div>
+
+                                <div class="metric-card accent-amber">
+                                    <div class="metric-top">
+                                        <div class="metric-icon"><i class="fa fa-line-chart" title="Monthly member growth"/></div>
+                                    </div>
+                                    <div class="metric-value">
+                                        <field name="growth_rate"/><span class="metric-suffix">%</span>
+                                    </div>
+                                    <div class="metric-label">Monthly Member Growth</div>
+                                    <div class="metric-caption">New members compared with last month</div>
+                                    <button name="action_view_month_members" type="object" class="metric-action">View this month <i class="fa fa-arrow-right"/></button>
+                                </div>
+
+                                <div class="metric-card accent-green">
+                                    <div class="metric-top">
+                                        <div class="metric-icon"><i class="fa fa-line-chart" title="Monthly agent growth"/></div>
+                                    </div>
+                                    <div class="metric-value">
+                                        <field name="agent_growth_rate"/><span class="metric-suffix">%</span>
+                                    </div>
+                                    <div class="metric-label">Monthly Agent Growth</div>
+                                    <div class="metric-caption">New agents compared with last month</div>
+                                    <button name="action_view_month_agents" type="object" class="metric-action">View this month <i class="fa fa-arrow-right"/></button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="dashboard-section">
+                            <div class="section-heading">
+                                <h2 class="section-title">Today's Activity</h2>
+                                <span class="section-note">New profiles created in your timezone</span>
+                            </div>
+
+                            <div class="metric-grid">
+                                <div class="metric-card accent-indigo">
+                                    <div class="metric-top">
+                                        <div class="metric-icon"><i class="fa fa-user-plus" title="New members"/></div>
+                                    </div>
+                                    <div class="metric-value"><field name="today_members"/></div>
+                                    <div class="metric-label">New Members Today</div>
+                                    <div class="metric-caption">Membership profiles created today</div>
+                                    <button name="action_view_today_members" type="object" class="metric-action">Review members <i class="fa fa-arrow-right"/></button>
+                                </div>
+
+                                <div class="metric-card accent-red">
+                                    <div class="metric-top">
+                                        <div class="metric-icon"><i class="fa fa-user-circle" title="New agents"/></div>
+                                    </div>
+                                    <div class="metric-value"><field name="today_agents"/></div>
+                                    <div class="metric-label">New Agents Today</div>
+                                    <div class="metric-caption">Agent profiles created today</div>
+                                    <button name="action_view_today_agents" type="object" class="metric-action">Review agents <i class="fa fa-arrow-right"/></button>
+                                </div>
+
+                                <div class="metric-card accent-purple">
+                                    <div class="metric-top">
+                                        <div class="metric-icon"><i class="fa fa-calendar-check-o" title="Current month"/></div>
+                                    </div>
+                                    <div class="metric-value"><field name="this_month_members"/></div>
+                                    <div class="metric-label">Members This Month</div>
+                                    <div class="metric-caption">New memberships in the current month</div>
+                                    <button name="action_view_month_members" type="object" class="metric-action">Open monthly records <i class="fa fa-arrow-right"/></button>
+                                </div>
+
+                                <div class="metric-card accent-blue">
+                                    <div class="metric-top">
+                                        <div class="metric-icon"><i class="fa fa-history" title="Previous month"/></div>
+                                    </div>
+                                    <div class="metric-value"><field name="last_month_members"/></div>
+                                    <div class="metric-label">Members Last Month</div>
+                                    <div class="metric-caption">Baseline used for monthly growth</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="dashboard-section">
+                            <div class="section-heading">
+                                <h2 class="section-title">Program Insights</h2>
+                                <span class="section-note">Access coverage and loyalty position</span>
+                            </div>
+
+                            <div class="insight-grid">
+                                <div class="insight-card">
+                                    <div class="insight-header">
+                                        <div class="insight-icon"><i class="fa fa-shield" title="Portal coverage"/></div>
+                                        <div class="insight-title">Portal Coverage</div>
+                                    </div>
+                                    <div class="insight-row">
+                                        <span class="insight-label">Coverage rate</span>
+                                        <span class="insight-value"><field name="portal_coverage"/>%</span>
+                                    </div>
+                                    <div class="insight-row">
+                                        <span class="insight-label">Portal-enabled profiles</span>
+                                        <span class="insight-value"><field name="total_portal_users"/></span>
+                                    </div>
+                                    <button name="action_view_portal_users" type="object" class="metric-action">Manage portal access <i class="fa fa-arrow-right"/></button>
+                                </div>
+
+                                <div class="insight-card">
+                                    <div class="insight-header">
+                                        <div class="insight-icon"><i class="fa fa-star" title="Loyalty points"/></div>
+                                        <div class="insight-title">Loyalty Points</div>
+                                    </div>
+                                    <div class="insight-row">
+                                        <span class="insight-label">Points in circulation</span>
+                                        <span class="insight-value"><field name="total_loyalty_points"/></span>
+                                    </div>
+                                    <div class="insight-row">
+                                        <span class="insight-label">Included profiles</span>
+                                        <span class="insight-value">Members + agents</span>
+                                    </div>
+                                    <button name="action_view_loyalty_profiles" type="object" class="metric-action">Review loyalty profiles <i class="fa fa-arrow-right"/></button>
+                                </div>
+
+                                <div class="insight-card">
+                                    <div class="insight-header">
+                                        <div class="insight-icon"><i class="fa fa-money" title="Loyalty value"/></div>
+                                        <div class="insight-title">Loyalty Value</div>
+                                    </div>
+                                    <div class="insight-row">
+                                        <span class="insight-label">Current equivalent value</span>
+                                        <span class="insight-value"><field name="total_loyalty_amount"/> TK</span>
+                                    </div>
+                                    <div class="insight-row">
+                                        <span class="insight-label">Source</span>
+                                        <span class="insight-value">Active conversion rule</span>
+                                    </div>
+                                    <button name="action_view_loyalty_profiles" type="object" class="metric-action">Open balances <i class="fa fa-arrow-right"/></button>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </sheet>
             </form>
@@ -175,5 +524,4 @@
         <field name="res_id" ref="membership_dashboard_record"/>
         <field name="target">current</field>
     </record>
-
 </odoo>
